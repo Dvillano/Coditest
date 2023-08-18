@@ -1,13 +1,10 @@
 import React from "react";
-import Link from "next/link";
+import Login from "./components/Login";
 
 export default function Home() {
   return (
     <>
-      <h1>Main</h1>
-      <Link href="/auth">
-        Go to Auth
-      </Link>
+      <Login />
     </>
   );
 }
