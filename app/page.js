@@ -1,10 +1,9 @@
-import React from "react";
-import Login from "./components/Login";
+import Registration from "./components/register/Registration";
 
 export default function Home() {
   return (
     <>
-      <Login />
+      <Registration />
     </>
   );
 }
