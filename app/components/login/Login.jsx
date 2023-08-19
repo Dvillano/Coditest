@@ -13,7 +13,7 @@ const Login = () => {
 
     useEffect(() => {
         if (!isLoading && authUser) {
-            navigate("admin");
+            navigate("candidato");
         }
     }, [isLoading, authUser]);
 

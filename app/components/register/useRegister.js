@@ -1,7 +1,7 @@
 import { useRouter } from "next/navigation";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-
-import { auth } from "../../firebase/firebaseConfig";
+import { addDoc, collection } from "firebase/firestore";
+import { auth, db } from "../../firebase/firebaseConfig";
 import { useAuth } from "../../firebase/firebaseAuth";
 
 export const useRegister = () => {
@@ -12,12 +12,29 @@ export const useRegister = () => {
         router.push(`/${url}`);
     };
 
-    const handleSubmit = async (e, email, password) => {
+    const handleSubmit = async (
+        e,
+        nombre,
+        apellido,
+        nivel,
+        email,
+        password
+    ) => {
         e.preventDefault();
+
         try {
             await createUserWithEmailAndPassword(auth, email, password);
-            alert("registrado correctamente");
+            alert("Autenticado correctamente");
 
+            const docRef = await addDoc(collection(db, "usuarios"), {
+                nombre: nombre,
+                apellido: apellido,
+                email: email,
+                nivel: nivel,
+                rol: "candidato",
+            });
+
+            console.log("Document written with ID: ", docRef.id);
         } catch (error) {
             alert(error);
         }
