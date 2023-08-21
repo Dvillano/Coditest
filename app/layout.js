@@ -1,6 +1,7 @@
 import "./globals.css";
 import { AuthUserProvider } from "./firebase/firebaseAuth";
 import Navbar from "./components/navbar/Navbar";
+import { Toaster } from "react-hot-toast";
 
 export const metadata = {
     title: "Coditest",
@@ -15,6 +16,7 @@ export default function RootLayout({ children }) {
                     <Navbar />
                     {children}
                 </AuthUserProvider>
+                <Toaster />
             </body>
         </html>
     );

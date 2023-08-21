@@ -27,6 +27,7 @@ export const useRegister = () => {
             alert("Autenticado correctamente");
 
             const docRef = await addDoc(collection(db, "usuarios"), {
+                id: auth.currentUser.uid,
                 nombre: nombre,
                 apellido: apellido,
                 email: email,

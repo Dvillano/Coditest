@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 import { auth } from "../../firebase/firebaseConfig";
+import { toast } from "react-hot-toast";
 
 export const useLogin = () => {
     const router = useRouter();
@@ -16,7 +17,7 @@ export const useLogin = () => {
         try {
             await signInWithEmailAndPassword(auth, email, password);
 
-            alert("Logueado correctamente");
+            toast.success("Ingreso Correcto");
         } catch (error) {
             alert(error);
         }
