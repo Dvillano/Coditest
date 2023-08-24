@@ -1,7 +1,5 @@
 import { useRouter } from "next/navigation";
-
 import { signInWithEmailAndPassword } from "firebase/auth";
-
 import { auth } from "../../firebase/firebaseConfig";
 import { toast } from "react-hot-toast";
 
@@ -16,10 +14,10 @@ export const useLogin = () => {
         e.preventDefault();
         try {
             await signInWithEmailAndPassword(auth, email, password);
-
             toast.success("Ingreso Correcto");
         } catch (error) {
-            alert(error);
+            toast.error("Error al iniciar sesión");
+            console.error("Error al iniciar sesión:", error);
         }
     };
 

@@ -2,31 +2,92 @@
 import React, { useEffect, useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
-import useAssignedProblem from "./useAssignedProblem";
-import { auth } from "@/app/firebase/firebaseConfig";
+// import useAssignedProblem from "./useAssignedProblem";
 import toast from "react-hot-toast";
+import useSaveResults from "./useSaveResults";
+import evaluateUserCode from "./codeEvaluator"; // Importa la función
+import { db } from "../../firebase/firebaseConfig";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { useAuth } from "../../firebase/firebaseAuth";
+import Loading from "../loader/Loading";
 
 function CodeEditor() {
-    const userId = auth.currentUser?.uid; // Debes obtener el userId del usuario logueado
-    const problemInfo = useAssignedProblem(userId); // Utiliza el hook para obtener la información
-    const [output, setOutput] = useState("");
+    const { authUser, isLoading } = useAuth();
+
+    const [problemInfo, setProblemInfo] = useState(null);
     const [code, setCode] = useState("");
+    const [output, setOutput] = useState("");
 
-    const executeCode = () => {
+    useEffect(() => {
+        if (authUser) {
+            fetchAssignedProblem();
+        }
+    }, [authUser]);
+
+    const fetchAssignedProblem = async () => {
         try {
-            const result = eval(code);
-            setOutput(result !== undefined ? result.toString() : "undefined");
+            // Realiza la consulta a Firestore para obtener la información de la prueba asignada al usuario
 
-            if (!result) {
-                toast.error("Incorrecto");
+            const userId = authUser.id;
+            const usuariosRef = collection(db, "usuarios");
+            const userRef = query(usuariosRef, where("id", "==", userId));
+            const userSnapshot = (await getDocs(userRef)).docs[0].data();
+            const assignedProblemId = userSnapshot.pruebas_asignadas;
+            if (assignedProblemId) {
+                const bateriaPruebasRef = collection(db, "bateria_pruebas");
+
+                const pruebaRef = query(
+                    bateriaPruebasRef,
+                    where("id", "==", assignedProblemId)
+                );
+                const listaPruebas = (await getDocs(pruebaRef)).docs[0].data();
+
+                if (listaPruebas.problemas) {
+                    const problemasRef = collection(db, "problemas");
+                    const problemas = query(
+                        problemasRef,
+                        where("id", "in", listaPruebas.problemas)
+                    );
+                    const listaProblemas = (
+                        await getDocs(problemas)
+                    ).docs[0].data();
+
+                    setProblemInfo(listaProblemas);
+                }
             } else {
-                toast.success("Correcto!");
+                setProblemInfo(null); // No hay prueba asignada
             }
         } catch (error) {
-            toast.error("Incorrecto");
-            setOutput(`Error: ${error.message}`);
+            console.error("Error fetching assigned problem:", error);
         }
     };
+
+    const executeCode = async () => {
+        try {
+            const resultado = evaluateUserCode(
+                code,
+                problemInfo.codigo_evaluador
+            );
+
+            if (resultado) {
+                toast.success("Bien hecho! Todos los tests pasaron");
+            } else {
+                toast.error("Oops! Algunos tests fallaron");
+            }
+
+            useSaveResults(
+                userId,
+                problemInfo.id,
+                resultado ? "paso" : "fallo"
+            );
+        } catch (error) {
+            console.log(error.message);
+        }
+    };
+
+    if (isLoading || !problemInfo) {
+        return <Loading />;
+    }
 
     return (
         <div>
@@ -41,7 +102,10 @@ function CodeEditor() {
                     <div className="flex">
                         <div className="border p-4 rounded bg-gray-100 mr-2 flex-1">
                             <CodeMirror
-                                value={problemInfo.plantilla_codigo}
+                                value={problemInfo.plantilla_codigo.replaceAll(
+                                    "\\n",
+                                    "\n"
+                                )}
                                 height="200px"
                                 extensions={[javascript({ jsx: true })]}
                                 onChange={setCode}

@@ -2,11 +2,10 @@ import { useRouter } from "next/navigation";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { addDoc, collection } from "firebase/firestore";
 import { auth, db } from "../../firebase/firebaseConfig";
-import { useAuth } from "../../firebase/firebaseAuth";
+import { toast } from "react-hot-toast";
 
 export const useRegister = () => {
     const router = useRouter();
-    const { setAuthUser } = useAuth();
 
     const handleNavigate = (url) => {
         router.push(`/${url}`);
@@ -23,21 +22,28 @@ export const useRegister = () => {
         e.preventDefault();
 
         try {
-            await createUserWithEmailAndPassword(auth, email, password);
-            alert("Autenticado correctamente");
+            const { user } = await createUserWithEmailAndPassword(
+                auth,
+                email,
+                password
+            );
+            toast.success("Registrado correctamente");
 
-            const docRef = await addDoc(collection(db, "usuarios"), {
-                id: auth.currentUser.uid,
-                nombre: nombre,
-                apellido: apellido,
-                email: email,
-                nivel: nivel,
+            const userData = {
+                id: user.uid,
+                nombre,
+                apellido,
+                email,
+                nivel,
                 rol: "candidato",
-            });
+            };
 
-            console.log("Document written with ID: ", docRef.id);
+            await addDoc(collection(db, "usuarios"), userData);
+
+            console.log("Document written with ID: ", user.uid);
         } catch (error) {
-            alert(error);
+            toast.error("Error al registrarse");
+            console.error("Error al registrarse:", error);
         }
     };
 

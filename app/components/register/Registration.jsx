@@ -6,9 +6,11 @@ import { useAuth } from "../../firebase/firebaseAuth";
 import Loading from "../loader/Loading";
 
 const Registration = () => {
+    //Custom Hooks
     const { handleSubmit, navigate } = useRegister();
     const { authUser, isLoading } = useAuth();
 
+    //Estados
     const [nombre, setNombre] = useState("");
     const [apellido, setApellido] = useState("");
     const [nivel, setNivel] = useState("principiante");
@@ -17,13 +19,15 @@ const Registration = () => {
 
     useEffect(() => {
         if (!isLoading && authUser) {
-            navigate("admin");
+            navigate("/");
         }
     }, [isLoading, authUser]);
 
-    return !isLoading && authUser ? (
-        <Loading />
-    ) : (
+    if (isLoading || authUser) {
+        return <Loading />;
+    }
+
+    return (
         <div className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden">
             <div className="w-full p-6 bg-white rounded-md shadow-md lg:max-w-xl">
                 <h1 className="text-3xl font-bold text-center text-gray-700">

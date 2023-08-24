@@ -11,30 +11,26 @@ const AuthUserContext = createContext({
 
 export default function useFirebaseAuth() {
     const [authUser, setAuthUser] = useState(null);
-    const [isLoading, SetLoading] = useState(false);
-
-    const clear = () => {
-        setAuthUser(null);
-        SetLoading(false);
-    };
+    const [isLoading, setIsLoading] = useState(true);
 
     const authStateChanged = (user) => {
-        SetLoading(true);
+        setIsLoading(true);
         if (!user) {
+            setAuthUser(null);
+            setIsLoading(false);
             clear();
             return;
         }
         setAuthUser({
             id: user.uid,
             email: user.email,
-            name: user.displayName,
         });
 
-        SetLoading(false);
+        setIsLoading(false);
     };
 
     const signOut = () => {
-        authSignOut(auth).then(() => clear());
+        authSignOut(auth).then(() => setAuthUser(null));
     };
 
     useEffect(() => {
@@ -46,7 +42,6 @@ export default function useFirebaseAuth() {
         authUser,
         isLoading,
         setAuthUser,
-        SetLoading,
         signOut,
     };
 }

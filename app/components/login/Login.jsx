@@ -6,8 +6,11 @@ import { useAuth } from "../../firebase/firebaseAuth";
 import Loading from "../loader/Loading";
 
 const Login = () => {
+    //Custom Hooks
     const { handleSubmit, navigate } = useLogin();
     const { authUser, isLoading } = useAuth();
+
+    //Estados
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -17,9 +20,11 @@ const Login = () => {
         }
     }, [isLoading, authUser]);
 
-    return !isLoading && authUser ? (
-        <Loading />
-    ) : (
+    if (isLoading || authUser) {
+        return <Loading />;
+    }
+
+    return (
         <div className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden">
             <div className="w-full p-6 bg-white rounded-md shadow-md lg:max-w-xl">
                 <h1 className="text-3xl font-bold text-center text-gray-700">

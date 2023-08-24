@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import React, { useEffect } from "react";
 import { useAuth } from "../../firebase/firebaseAuth";
 import { useRouter } from "next/navigation";
@@ -14,24 +13,22 @@ const Navbar = () => {
     }, [isLoading, authUser]);
 
     return (
-        <>
-            <div className="bg-slate-600 flex justify-around items-center gap-9 p-5 text-3xl sticky top-0 ">
-                <h1 className="text-3xl text-white font-semibold flex justify-center items-center gap-4">
-                    Coditest
-                </h1>
-
-                {authUser && (
+        <div className="bg-gray-700 py-4 px-6 flex justify-between items-center sticky top-0">
+            <h1 className="text-2xl font-semibold text-white">Coditest</h1>
+            {authUser && (
+                <div className="flex items-center gap-4">
+                    <p className="text-white">{authUser.email}</p>
                     <button
-                        className="font-Pacifico text-xl rounded-lg hover:text-white w-auto p-2 bg-[#7b9194]"
+                        className="text-xl rounded-lg hover:text-gray-300 px-3 py-1 bg-gray-700 text-white"
                         onClick={() => {
                             signOut();
                         }}
                     >
                         Logout
                     </button>
-                )}
-            </div>
-        </>
+                </div>
+            )}
+        </div>
     );
 };
 
