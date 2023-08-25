@@ -8,7 +8,6 @@ import evaluateUserCode from "./codeEvaluator"; // Importa la función
 import { useAuth } from "../../firebase/firebaseAuth";
 import Loading from "../loader/Loading";
 import useFetchAssignedProblems from "./useFetchAssignedProblems";
-import { auth } from "@/app/firebase/firebaseConfig";
 
 function CodeEditor() {
     const { authUser, isLoading } = useAuth();
@@ -16,11 +15,8 @@ function CodeEditor() {
     const [problemList, setProblemList] = useState(null);
     const [currentProblem, setCurrentProblem] = useState(null);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [isCurrentProblemPassed, setIsCurrentProblemPassed] = useState(false);
     const [allProblemsCompleted, setAllProblemsCompleted] = useState(false);
-
     const [code, setCode] = useState("");
-    const [output, setOutput] = useState("");
 
     useEffect(() => {
         const fetchProblems = async () => {
@@ -49,8 +45,8 @@ function CodeEditor() {
             if (resultado) {
                 toast.success("Bien hecho! Todos los tests pasaron");
                 setCurrentIndex(currentIndex + 1);
-                setIsCurrentProblemPassed(true);
 
+                // Siguiente problema
                 if (currentIndex + 1 < problemList.length) {
                     setCurrentProblem(problemList[currentIndex + 1]);
                 } else {
@@ -106,7 +102,6 @@ function CodeEditor() {
                             </button>
 
                             <p>Resultado:</p>
-                            <pre className="text-gray-800">{output}</pre>
                         </div>
                     </div>
                 </div>

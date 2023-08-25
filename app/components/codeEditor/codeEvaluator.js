@@ -1,5 +1,3 @@
-import assert from "assert";
-
 function evaluateUserCode(userCode, testCases) {
     try {
         const evalFn = new Function(`return ${userCode}`)();

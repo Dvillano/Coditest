@@ -24,6 +24,9 @@ const fetchAssignedProblems = async (authUser) => {
                 doc.data()
             );
 
+            listaProblemasAsignados.sort(() => {
+                return Math.random() - 0.5;
+            });
             return listaProblemasAsignados;
         } else {
             return null; // No hay prueba asignada
