@@ -2,82 +2,67 @@
 import React, { useEffect, useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
-// import useAssignedProblem from "./useAssignedProblem";
 import toast from "react-hot-toast";
 import useSaveResults from "./useSaveResults";
 import evaluateUserCode from "./codeEvaluator"; // Importa la función
-import { db } from "../../firebase/firebaseConfig";
-import { collection, getDocs, query, where } from "firebase/firestore";
 import { useAuth } from "../../firebase/firebaseAuth";
 import Loading from "../loader/Loading";
+import useFetchAssignedProblems from "./useFetchAssignedProblems";
+import { auth } from "@/app/firebase/firebaseConfig";
 
 function CodeEditor() {
     const { authUser, isLoading } = useAuth();
 
-    const [problemInfo, setProblemInfo] = useState(null);
+    const [problemList, setProblemList] = useState(null);
+    const [currentProblem, setCurrentProblem] = useState(null);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [isCurrentProblemPassed, setIsCurrentProblemPassed] = useState(false);
+    const [allProblemsCompleted, setAllProblemsCompleted] = useState(false);
+
     const [code, setCode] = useState("");
     const [output, setOutput] = useState("");
 
     useEffect(() => {
-        if (authUser) {
-            fetchAssignedProblem();
-        }
+        const fetchProblems = async () => {
+            if (authUser) {
+                try {
+                    const problems = await useFetchAssignedProblems(authUser);
+                    setProblemList(problems);
+                    setCurrentProblem(problems[0]);
+                } catch (error) {
+                    console.error("Error fetching problems:", error);
+                }
+            }
+        };
+
+        fetchProblems();
     }, [authUser]);
 
-    const fetchAssignedProblem = async () => {
-        try {
-            // Realiza la consulta a Firestore para obtener la información de la prueba asignada al usuario
-
-            const userId = authUser.id;
-            const usuariosRef = collection(db, "usuarios");
-            const userRef = query(usuariosRef, where("id", "==", userId));
-            const userSnapshot = (await getDocs(userRef)).docs[0].data();
-            const assignedProblemId = userSnapshot.pruebas_asignadas;
-            if (assignedProblemId) {
-                const bateriaPruebasRef = collection(db, "bateria_pruebas");
-
-                const pruebaRef = query(
-                    bateriaPruebasRef,
-                    where("id", "==", assignedProblemId)
-                );
-                const listaPruebas = (await getDocs(pruebaRef)).docs[0].data();
-
-                if (listaPruebas.problemas) {
-                    const problemasRef = collection(db, "problemas");
-                    const problemas = query(
-                        problemasRef,
-                        where("id", "in", listaPruebas.problemas)
-                    );
-                    const listaProblemas = (
-                        await getDocs(problemas)
-                    ).docs[0].data();
-
-                    setProblemInfo(listaProblemas);
-                }
-            } else {
-                setProblemInfo(null); // No hay prueba asignada
-            }
-        } catch (error) {
-            console.error("Error fetching assigned problem:", error);
-        }
-    };
-
+    // Ejecuta el código evaluado en la prueba
     const executeCode = async () => {
         try {
             const resultado = evaluateUserCode(
                 code,
-                problemInfo.codigo_evaluador
+                currentProblem.codigo_evaluador
             );
 
             if (resultado) {
                 toast.success("Bien hecho! Todos los tests pasaron");
+                setCurrentIndex(currentIndex + 1);
+                setIsCurrentProblemPassed(true);
+
+                if (currentIndex + 1 < problemList.length) {
+                    setCurrentProblem(problemList[currentIndex + 1]);
+                } else {
+                    setAllProblemsCompleted(true);
+                }
             } else {
                 toast.error("Oops! Algunos tests fallaron");
             }
 
             useSaveResults(
-                userId,
-                problemInfo.id,
+                authUser.id,
+                currentProblem.id,
                 resultado ? "paso" : "fallo"
             );
         } catch (error) {
@@ -85,24 +70,24 @@ function CodeEditor() {
         }
     };
 
-    if (isLoading || !problemInfo) {
+    if (isLoading || !currentProblem) {
         return <Loading />;
     }
 
     return (
         <div>
-            {problemInfo ? (
+            {allProblemsCompleted ? (
+                <h1>Todos los problemas completados</h1>
+            ) : (
                 <div>
-                    <h2>{problemInfo.titulo}</h2>
-                    <p>{problemInfo.descripcion}</p>
-                    <p>{problemInfo.sugerencia}</p>
-                    <p>Entrada del problema: {problemInfo.caso_prueba}</p>
-                    <p>Salida esperada: {problemInfo.salida_esperada}</p>
+                    <h2>{currentProblem.titulo}</h2>
+                    <p>{currentProblem.descripcion}</p>
+                    <p>{currentProblem.sugerencia}</p>
 
                     <div className="flex">
                         <div className="border p-4 rounded bg-gray-100 mr-2 flex-1">
                             <CodeMirror
-                                value={problemInfo.plantilla_codigo.replaceAll(
+                                value={currentProblem.plantilla_codigo.replaceAll(
                                     "\\n",
                                     "\n"
                                 )}
@@ -125,8 +110,6 @@ function CodeEditor() {
                         </div>
                     </div>
                 </div>
-            ) : (
-                <p>No hay prueba asignada</p>
             )}
         </div>
     );

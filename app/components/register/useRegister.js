@@ -36,6 +36,7 @@ export const useRegister = () => {
                 email,
                 nivel,
                 rol: "candidato",
+                tienePruebasAsignadas: false,
             };
 
             await addDoc(collection(db, "usuarios"), userData);
