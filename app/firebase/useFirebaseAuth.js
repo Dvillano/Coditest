@@ -26,6 +26,7 @@ export const useFirebaseAuth = () => {
                 email,
                 password
             );
+
             toast.success("Registrado correctamente");
             return userCredential;
         } catch (error) {

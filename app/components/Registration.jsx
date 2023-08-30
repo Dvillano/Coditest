@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useFirebaseAuth } from "../../firebase/useFirebaseAuth";
-import { useFirestore } from "../../firebase/useFirestore";
-import { useNavigation } from "../../utils/useNavigation";
-import Loading from "../Loading";
+import { useFirebaseAuth } from "../firebase/useFirebaseAuth";
+import { useFirestore } from "../firebase/useFirestore";
+import { useNavigation } from "../utils/useNavigation";
+import Loading from "./Loading";
 
 const Registration = () => {
     const { signUpFirebase, authUser } = useFirebaseAuth();
-    const { insertDocument } = useFirestore();
+    const { insertUser } = useFirestore();
     const { handleNavigate } = useNavigation();
 
     const [nombre, setNombre] = useState("");
@@ -29,7 +29,6 @@ const Registration = () => {
             const { user } = await signUpFirebase(email, password);
 
             const userData = {
-                id: user.uid,
                 nombre,
                 apellido,
                 nivel,
@@ -38,8 +37,7 @@ const Registration = () => {
                 tienePruebasAsignadas: false,
             };
 
-            console.log(userData);
-            await insertDocument("usuarios", userData);
+            await insertUser(user, userData);
 
             console.log("User registered successfully!");
         } catch (error) {

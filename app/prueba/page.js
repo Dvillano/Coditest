@@ -4,7 +4,7 @@ import CodeEditor from "../components/codeEditor/CodeEditor";
 const Page = () => {
     return (
         <div>
-            {/* <CodeEditor /> */}
+            <CodeEditor />
         </div>
     );
 };

@@ -5,12 +5,14 @@ import { javascript } from "@codemirror/lang-javascript";
 import toast from "react-hot-toast";
 import useSaveResults from "./useSaveResults";
 import Loading from "../Loading";
-import fetchAssignedProblems from "./fetchAssignedProblems";
+import { useFirebaseAuth } from "../../firebase/useFirebaseAuth";
+import { useFirestore } from "../../firebase/useFirestore";
 
 function CodeEditor() {
-    // const { authUser, isLoading } = useAuth(); TODO
+    const { authUser, isLoading } = useFirebaseAuth();
+    const { fetchAssignedTests } = useFirestore();
 
-    const [problemList, setProblemList] = useState(null);
+    const [problemList, setProblemList] = useState([]);
     const [currentProblem, setCurrentProblem] = useState(null);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [allProblemsCompleted, setAllProblemsCompleted] = useState(false);
@@ -18,27 +20,27 @@ function CodeEditor() {
     const [results, setResults] = useState([]);
     const [output, setOutput] = useState("");
 
-    // useEffect(() => {
-    //     const fetchProblems = async () => {
-    //         if (authUser) {
-    //             try {
-    //                 const problems = await fetchAssignedProblems(authUser);
-    //                 setProblemList(problems);
-    //                 setCurrentProblem(problems[0]);
-    //             } catch (error) {
-    //                 console.error("Error fetching problems:", error);
-    //             }
-    //         }
-    //     };
+    useEffect(() => {
+        const fetchProblems = async () => {
+            if (authUser) {
+                try {
+                    const problems = await fetchAssignedTests(authUser.uid);
+                    setProblemList(problems);
+                    setCurrentProblem(problems[0]);
+                } catch (error) {
+                    console.error("Error fetching problems:", error);
+                }
+            }
+        };
 
-    //     fetchProblems();
-    // }, [authUser]);
+        fetchProblems();
+    }, [authUser]);
 
     // Ejecuta el código evaluado en la prueba
     const executeCode = () => {
         try {
             const evalFn = new Function(`return ${code}`)();
-            
+
             evalFn != typeof Function
                 ? toast.error("Oops! El código no es válido")
                 : null;
