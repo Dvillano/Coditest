@@ -10,7 +10,7 @@ import { useFirestore } from "../../firebase/useFirestore";
 
 function CodeEditor() {
     const { authUser, isLoading } = useFirebaseAuth();
-    const { fetchAssignedTests } = useFirestore();
+    const { fetchAssignedProblems } = useFirestore();
 
     const [problemList, setProblemList] = useState([]);
     const [currentProblem, setCurrentProblem] = useState(null);
@@ -24,7 +24,7 @@ function CodeEditor() {
         const fetchProblems = async () => {
             if (authUser) {
                 try {
-                    const problems = await fetchAssignedTests(authUser.uid);
+                    const problems = await fetchAssignedProblems(authUser.uid);
                     setProblemList(problems);
                     setCurrentProblem(problems[0]);
                 } catch (error) {
