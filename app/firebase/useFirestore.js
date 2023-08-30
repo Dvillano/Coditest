@@ -38,11 +38,13 @@ export const useFirestore = () => {
                 return [];
             }
 
-            // Fetch problems with the same nivel as the user
+            // Busca problemas no resueltos del mismo nivel para el usuario
             const userNivel = userSnapshot.data().nivel;
+            const passedProblems = await fetchUserProgress(userId);
             const problemsQuery = query(
                 collection(db, "problemas"),
-                where("nivel", "==", userNivel)
+                where("nivel", "==", userNivel),
+                where("id", "not-in", passedProblems)
             );
             const problemsSnapshot = await getDocs(problemsQuery);
 
@@ -56,7 +58,7 @@ export const useFirestore = () => {
             });
 
             problems = problems.slice(0, 3);
-      
+
             return problems;
         } catch (error) {
             console.error("Error fetching assigned problems:", error);
@@ -65,25 +67,63 @@ export const useFirestore = () => {
     };
 
     const saveResults = async (userId, problemId, status) => {
-      const resultData = {
-        usuario_id: userId,
-        problema_id: problemId,
-        resultado: status,
-        fecha: new Date().toLocaleString(),
-      };
+        const resultData = {
+            usuario_id: userId,
+            problema_id: problemId,
+            resultado: status,
+            fecha: new Date().toLocaleString(),
+        };
 
-      try {
-        const resultRef = doc(collection(db, "resultados"));
-        await setDoc(resultRef, resultData);
-      } catch (error){
-        console.error("Error saving results:", error);
-      }
-    }
+        try {
+            const resultRef = doc(collection(db, "resultados"));
+            await setDoc(resultRef, resultData);
+        } catch (error) {
+            console.error("Error saving results:", error);
+        }
+    };
+
+    const fetchUserProgress = async (userId) => {
+        try {
+            const userProgressRef = doc(db, "progresoUsuario", userId);
+            const userProgressSnapshot = await getDoc(userProgressRef);
+            return userProgressSnapshot.exists()
+                ? userProgressSnapshot.data().problemasAprobados
+                : [];
+        } catch (error) {
+            console.error("Error fetching user progress:", error);
+            return [];
+        }
+    };
+
+    const updatePassedProblems = async (userId, problemId) => {
+        try {
+            const userProgressRef = doc(db, "progresoUsuario", userId);
+            const userProgressSnapshot = await getDoc(userProgressRef);
+
+            if (userProgressSnapshot.exists()) {
+                const problemasAprobados =
+                    userProgressSnapshot.data().problemasAprobados;
+                problemasAprobados.push(problemId);
+                await setDoc(
+                    userProgressRef,
+                    { problemasAprobados },
+                    { merge: true }
+                );
+            } else {
+                await setDoc(userProgressRef, {
+                    problemasAprobados: [problemId],
+                });
+            }
+        } catch (error) {
+            console.error("Error updating user progress:", error);
+        }
+    };
 
     return {
         isLoading,
         insertUser,
         fetchAssignedProblems,
-        saveResults
+        saveResults,
+        updatePassedProblems,
     };
 };
