@@ -82,6 +82,12 @@ export const useFirestore = () => {
         }
     };
 
+    /**
+     * Fetches the user's progress from the "progresoUsuario" collection in the database.
+     *
+     * @param {string} userId - The ID of the user.
+     * @return {Array} An array of the problems the user has approved, or an empty array if the user has no progress.
+     */
     const fetchUserProgress = async (userId) => {
         try {
             const userProgressRef = doc(db, "progresoUsuario", userId);

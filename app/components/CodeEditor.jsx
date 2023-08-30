@@ -9,12 +9,12 @@ import { useFirestore } from "../firebase/useFirestore";
 
 function CodeEditor() {
     const { authUser, isLoading } = useFirebaseAuth();
-    const { fetchAssignedProblems, saveResults } = useFirestore();
+    const { fetchAssignedProblems, saveResults, updatePassedProblems } =
+        useFirestore();
 
     const [problemList, setProblemList] = useState([]);
     const [currentProblem, setCurrentProblem] = useState(null);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [allProblemsCompleted, setAllProblemsCompleted] = useState(false);
     const [code, setCode] = useState("");
     const [results, setResults] = useState([]);
     const [output, setOutput] = useState("");
@@ -25,7 +25,9 @@ function CodeEditor() {
                 try {
                     const problems = await fetchAssignedProblems(authUser.uid);
                     setProblemList(problems);
-                    setCurrentProblem(problems[0]);
+                    problems.length > 0
+                        ? setCurrentProblem(problems[0])
+                        : setCurrentProblem(true);
                 } catch (error) {
                     console.error("Error fetching problems:", error);
                 }
@@ -56,6 +58,11 @@ function CodeEditor() {
 
             // Actualiza la UI y guarda resultados
             handleTestResults(allTestsPassed);
+
+            localStorage.setItem(
+                "currentProblemIndex",
+                currentIndex.toString()
+            );
         } catch (error) {
             console.log(error.message);
             toast.error(error.message);
@@ -66,6 +73,7 @@ function CodeEditor() {
         const resultStatus = allTestsPassed ? "paso" : "fallo";
 
         await saveResults(authUser.uid, currentProblem.id, resultStatus);
+        await updatePassedProblems(authUser.uid, currentProblem.id);
 
         if (allTestsPassed) {
             toast.success("Bien hecho! Todos los tests pasaron");
@@ -81,7 +89,7 @@ function CodeEditor() {
         if (currentIndex + 1 < problemList.length) {
             setCurrentProblem(problemList[currentIndex + 1]);
         } else {
-            setAllProblemsCompleted(true);
+            setProblemList([]);
         }
     };
 
@@ -91,7 +99,7 @@ function CodeEditor() {
 
     return (
         <div>
-            {allProblemsCompleted ? (
+            {problemList.length == 0 ? (
                 <h1>Todos los problemas completados</h1>
             ) : (
                 <div>
