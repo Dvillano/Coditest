@@ -10,7 +10,7 @@ import { useFirestore } from "../../firebase/useFirestore";
 
 function CodeEditor() {
     const { authUser, isLoading } = useFirebaseAuth();
-    const { fetchAssignedProblems } = useFirestore();
+    const { fetchAssignedProblems, saveResults } = useFirestore();
 
     const [problemList, setProblemList] = useState([]);
     const [currentProblem, setCurrentProblem] = useState(null);
@@ -41,39 +41,48 @@ function CodeEditor() {
         try {
             const evalFn = new Function(`return ${code}`)();
 
-            evalFn != typeof Function
-                ? toast.error("Oops! El código no es válido")
-                : null;
+            // Verifica que sea una funcion el codigo
+            if (typeof evalFn !== "function") {
+                toast.error("Oops! El código no es válido");
+                return;
+            }
 
+            // Evalua el codigo del usuario contra los testsCases
             const results = currentProblem.codigo_evaluador.map(
                 (testCase) => evalFn(testCase.input) === testCase.outputEsperado
             );
 
-            setResults(results);
+            // Verifica si todos los resultados fueron correctos
+            const allTestsPassed = results.every((result) => result);
 
-            const resultadoFinal = results.every((result) => result);
-
-            if (resultadoFinal) {
-                toast.success("Bien hecho! Todos los tests pasaron");
-                setCurrentIndex(currentIndex + 1);
-
-                // Siguiente problema
-                if (currentIndex + 1 < problemList.length) {
-                    setCurrentProblem(problemList[currentIndex + 1]);
-                } else {
-                    setAllProblemsCompleted(true);
-                }
-            } else {
-                toast.error("Oops! Algunos tests fallaron");
-            }
-
-            useSaveResults(
-                authUser.id,
-                currentProblem.id,
-                resultadoFinal ? "paso" : "fallo"
-            );
+            // Actualiza la UI y guarda resultados
+            handleTestResults(allTestsPassed);
         } catch (error) {
             console.log(error.message);
+            toast.error(error.message);
+        }
+    };
+
+    const handleTestResults = async (allTestsPassed) => {
+        const resultStatus = allTestsPassed ? "paso" : "fallo";
+
+        await saveResults(authUser.uid, currentProblem.id, resultStatus);
+
+        if (allTestsPassed) {
+            toast.success("Bien hecho! Todos los tests pasaron");
+            handleNextProblem();
+        } else {
+            toast.error("Oops! Algunos tests fallaron");
+        }
+    };
+
+    const handleNextProblem = () => {
+        setCurrentIndex(currentIndex + 1);
+
+        if (currentIndex + 1 < problemList.length) {
+            setCurrentProblem(problemList[currentIndex + 1]);
+        } else {
+            setAllProblemsCompleted(true);
         }
     };
 

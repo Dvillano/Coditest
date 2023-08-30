@@ -64,9 +64,26 @@ export const useFirestore = () => {
         }
     };
 
+    const saveResults = async (userId, problemId, status) => {
+      const resultData = {
+        usuario_id: userId,
+        problema_id: problemId,
+        resultado: status,
+        fecha: new Date().toLocaleString(),
+      };
+
+      try {
+        const resultRef = doc(collection(db, "resultados"));
+        await setDoc(resultRef, resultData);
+      } catch (error){
+        console.error("Error saving results:", error);
+      }
+    }
+
     return {
         isLoading,
         insertUser,
         fetchAssignedProblems,
+        saveResults
     };
 };
