@@ -1,25 +1,57 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRegister } from "./useRegister";
-import { useAuth } from "../../firebase/firebaseAuth";
+import { useFirebaseAuth } from "../../firebase/useFirebaseAuth";
+import { useFirestore } from "../../firebase/useFirestore";
+import { useNavigation } from "../../utils/useNavigation";
 import Loading from "../Loading";
 
 const Registration = () => {
-    //Custom Hooks
-    const { handleSubmit, navigate } = useRegister();
-    const { authUser, isLoading } = useAuth();
+    const { signUpFirebase, authUser } = useFirebaseAuth();
+    const { insertDocument } = useFirestore();
+    const { handleNavigate } = useNavigation();
 
-    //Estados
     const [nombre, setNombre] = useState("");
     const [apellido, setApellido] = useState("");
     const [nivel, setNivel] = useState("principiante");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+
+    console.log(authUser);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            setIsLoading(true);
+
+            const { user } = await signUpFirebase(email, password);
+
+            const userData = {
+                id: user.uid,
+                nombre,
+                apellido,
+                nivel,
+                email,
+                rol: "candidato",
+                tienePruebasAsignadas: false,
+            };
+
+            console.log(userData);
+            await insertDocument("usuarios", userData);
+
+            console.log("User registered successfully!");
+        } catch (error) {
+            console.error("Error al registrarse:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     useEffect(() => {
         if (!isLoading && authUser) {
-            navigate("/");
+            handleNavigate("prueba");
         }
     }, [isLoading, authUser]);
 
@@ -115,25 +147,17 @@ const Registration = () => {
                     <button
                         type="submit"
                         className="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600"
-                        onClick={(e) =>
-                            handleSubmit(
-                                e,
-                                nombre,
-                                apellido,
-                                nivel,
-                                email,
-                                password
-                            )
-                        }
+                        onClick={(e) => handleSubmit(e)}
+                        disabled={isLoading}
                     >
-                        Registrarse
+                        {isLoading ? <Loading /> : "Registrarse"}
                     </button>
                     <p className="mt-6 ml-1">
                         Ya tienes una cuenta ?{" "}
                         <span
                             className="underline hover:text-blue-400 cursor-pointer"
                             onClick={() => {
-                                navigate("login");
+                                handleNavigate("login");
                             }}
                         >
                             Ingresa

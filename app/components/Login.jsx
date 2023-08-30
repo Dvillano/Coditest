@@ -83,7 +83,7 @@ const Login = () => {
                         <span
                             className="underline hover:text-blue-400 cursor-pointer"
                             onClick={() => {
-                                navigate("register");
+                                handleNavigate("register");
                             }}
                         >
                             Registrate
