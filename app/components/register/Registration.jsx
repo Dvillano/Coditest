@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRegister } from "./useRegister";
 import { useAuth } from "../../firebase/firebaseAuth";
-import Loading from "../loader/Loading";
+import Loading from "../Loading";
 
 const Registration = () => {
     //Custom Hooks

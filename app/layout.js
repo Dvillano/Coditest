@@ -1,7 +1,8 @@
 import "./globals.css";
-import { AuthUserProvider } from "./firebase/firebaseAuth";
-import Navbar from "./components/navbar/Navbar";
+import { AuthUserProvider } from "./firebase/useFirebaseAuth";
+import Navbar from "./components/Navbar";
 import { Toaster } from "react-hot-toast";
+
 
 export const metadata = {
     title: "Coditest",

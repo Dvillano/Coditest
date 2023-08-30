@@ -1,22 +1,32 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useLogin } from "./useLogin";
-import { useAuth } from "../../firebase/firebaseAuth";
-import Loading from "../loader/Loading";
+import Loading from "./Loading";
+import { useNavigation } from '../utils/useNavigation';
+import { useFirebaseAuth } from "../firebase/useFirebaseAuth"
+
 
 const Login = () => {
-    //Custom Hooks
-    const { handleSubmit, navigate } = useLogin();
-    const { authUser, isLoading } = useAuth();
+    const { authUser, isLoading, signInFirebase } = useFirebaseAuth();
+    const { handleNavigate } = useNavigation();
 
-    //Estados
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const handleLogin = async (e) => {
+        e.preventDefault();
+
+        try {
+            await signInFirebase(email, password);
+        } catch (error) {
+            console.error("Error al iniciar sesión:", error);
+        }
+    }
+
     useEffect(() => {
         if (!isLoading && authUser) {
-            navigate("prueba");
+            handleNavigate("prueba");
         }
     }, [isLoading, authUser]);
 
@@ -64,7 +74,7 @@ const Login = () => {
                     <button
                         type="submit"
                         className="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600"
-                        onClick={(e) => handleSubmit(e, email, password)}
+                        onClick={(e) => handleLogin(e, email, password)}
                     >
                         Ingresar
                     </button>

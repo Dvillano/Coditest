@@ -4,45 +4,54 @@ import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import toast from "react-hot-toast";
 import useSaveResults from "./useSaveResults";
-import evaluateUserCode from "./codeEvaluator"; // Importa la función
-import { useAuth } from "../../firebase/firebaseAuth";
-import Loading from "../loader/Loading";
-import useFetchAssignedProblems from "./useFetchAssignedProblems";
+import Loading from "../Loading";
+import fetchAssignedProblems from "./fetchAssignedProblems";
 
 function CodeEditor() {
-    const { authUser, isLoading } = useAuth();
+    // const { authUser, isLoading } = useAuth(); TODO
 
     const [problemList, setProblemList] = useState(null);
     const [currentProblem, setCurrentProblem] = useState(null);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [allProblemsCompleted, setAllProblemsCompleted] = useState(false);
     const [code, setCode] = useState("");
+    const [results, setResults] = useState([]);
+    const [output, setOutput] = useState("");
 
-    useEffect(() => {
-        const fetchProblems = async () => {
-            if (authUser) {
-                try {
-                    const problems = await useFetchAssignedProblems(authUser);
-                    setProblemList(problems);
-                    setCurrentProblem(problems[0]);
-                } catch (error) {
-                    console.error("Error fetching problems:", error);
-                }
-            }
-        };
+    // useEffect(() => {
+    //     const fetchProblems = async () => {
+    //         if (authUser) {
+    //             try {
+    //                 const problems = await fetchAssignedProblems(authUser);
+    //                 setProblemList(problems);
+    //                 setCurrentProblem(problems[0]);
+    //             } catch (error) {
+    //                 console.error("Error fetching problems:", error);
+    //             }
+    //         }
+    //     };
 
-        fetchProblems();
-    }, [authUser]);
+    //     fetchProblems();
+    // }, [authUser]);
 
     // Ejecuta el código evaluado en la prueba
-    const executeCode = async () => {
+    const executeCode = () => {
         try {
-            const resultado = evaluateUserCode(
-                code,
-                currentProblem.codigo_evaluador
+            const evalFn = new Function(`return ${code}`)();
+            
+            evalFn != typeof Function
+                ? toast.error("Oops! El código no es válido")
+                : null;
+
+            const results = currentProblem.codigo_evaluador.map(
+                (testCase) => evalFn(testCase.input) === testCase.outputEsperado
             );
 
-            if (resultado) {
+            setResults(results);
+
+            const resultadoFinal = results.every((result) => result);
+
+            if (resultadoFinal) {
                 toast.success("Bien hecho! Todos los tests pasaron");
                 setCurrentIndex(currentIndex + 1);
 
@@ -59,7 +68,7 @@ function CodeEditor() {
             useSaveResults(
                 authUser.id,
                 currentProblem.id,
-                resultado ? "paso" : "fallo"
+                resultadoFinal ? "paso" : "fallo"
             );
         } catch (error) {
             console.log(error.message);
@@ -102,6 +111,7 @@ function CodeEditor() {
                             </button>
 
                             <p>Resultado:</p>
+                            <p>{output}</p>
                         </div>
                     </div>
                 </div>

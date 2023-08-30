@@ -1,5 +1,5 @@
 import { db } from "../../firebase/firebaseConfig";
-import { addDoc, collection, doc, documentId } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 
 const useSaveResults = async (userId, problemaId, resultado) => {
     try {

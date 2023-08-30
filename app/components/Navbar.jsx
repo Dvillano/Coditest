@@ -1,16 +1,17 @@
 "use client";
+
 import React, { useEffect } from "react";
-import { useAuth } from "../../firebase/firebaseAuth";
+import { useFirebaseAuth } from "../firebase/useFirebaseAuth" 
 import { useRouter } from "next/navigation";
 const Navbar = () => {
     const router = useRouter();
-    const { authUser, isLoading, signOut } = useAuth();
+    const { authUser, isLoading, signOutFirebase } = useFirebaseAuth();
 
     useEffect(() => {
         if (!isLoading && !authUser) {
-            router.push("/");
+          router.push("/");
         }
-    }, [isLoading, authUser]);
+      }, [isLoading, authUser, router]);
 
     return (
         <div className="bg-gray-700 py-4 px-6 flex justify-between items-center sticky top-0">
@@ -21,7 +22,7 @@ const Navbar = () => {
                     <button
                         className="text-xl rounded-lg hover:text-gray-300 px-3 py-1 bg-gray-700 text-white"
                         onClick={() => {
-                            signOut();
+                            signOutFirebase();
                         }}
                     >
                         Logout
