@@ -1,5 +1,5 @@
 import React from "react";
-import CodeEditor from "../components/codeEditor/CodeEditor";
+import CodeEditor from "../components/CodeEditor";
 
 const Page = () => {
     return (
