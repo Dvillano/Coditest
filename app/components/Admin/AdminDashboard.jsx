@@ -32,7 +32,11 @@ export default function AdminDashboard() {
                 try {
                     const user = await fetchUser(authUser.uid);
 
-                    if (user && user.rol === "admin") {
+                    if (user) {
+                        setUser(user);
+                    }
+
+                    if (user.rol === "admin") {
                         // User has the admin role, fetch and display data
                         const logs = await fetchUserActivityLogs();
                         setUserActivityLogs(logs);
@@ -42,8 +46,6 @@ export default function AdminDashboard() {
 
                         const usersCount = await fetchTotalUsersCount();
                         setTotalUsers(usersCount);
-                    } else {
-                        toast.error("Unauthorized Access");
                     }
                 } catch (error) {
                     console.error("Error fetching data:", error);
@@ -58,7 +60,7 @@ export default function AdminDashboard() {
         return <Loading />;
     }
 
-    if (user !== "admin") {
+    if (user && user.rol !== "admin") {
         return <ErrorPage />;
     }
 
