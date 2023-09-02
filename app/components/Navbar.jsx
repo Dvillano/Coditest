@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { useFirebaseAuth } from "../firebase/useFirebaseAuth";
 import { useFirestore } from "../firebase/useFirestore";
-import { useRouter } from "next/navigation";
 
 import { Button } from "@material-tailwind/react";
 

@@ -12,8 +12,8 @@ import {
     logSignOut,
     logRegistration,
     logError,
-} from "./firebaseLogger"; // Import your logging functions
-
+} from "./firebaseLogger";
+import { setUserOnline, setUserOffline } from "./userPresence";
 import { auth } from "./firebaseConfig";
 import { toast } from "react-hot-toast";
 
@@ -77,6 +77,9 @@ export const useFirebaseAuth = () => {
             if (user) {
                 // Log the sign-out event
                 logSignOut(user);
+
+                // Set the user offline
+                setUserOffline(user.uid);
             }
             await signOut(auth);
         } catch (error) {
@@ -93,6 +96,7 @@ export const useFirebaseAuth = () => {
             if (user) {
                 // User is signed in
                 setAuthUser(user);
+                setUserOnline(user.uid);
             } else {
                 // User is signed out
                 setAuthUser(null);

@@ -35,9 +35,7 @@ const LogTable = ({ logs }) => {
         <div>
             <Card className="h-full w-full overflow-scroll">
                 <div className="flex justify-center items-center p-4">
-                    <h3 className="text-lg font-semibold">
-                        Log autenticacion usuario
-                    </h3>
+                    <h3 className="text-lg font-semibold">Logs</h3>
                 </div>
                 <table className="w-full min-w-max table-auto text-left">
                     <thead>
