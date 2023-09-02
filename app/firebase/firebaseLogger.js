@@ -7,7 +7,7 @@ export const logSignIn = (user) => {
         event: "Sign-In",
         userUid: user.uid,
         userEmail: user.email,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toLocaleString(),
     };
 
     // Log to Firestore (replace 'logs' with your Firestore collection name)
@@ -20,7 +20,7 @@ export const logSignOut = (user) => {
         event: "Sign-Out",
         userUid: user.uid,
         userEmail: user.email,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toLocaleString(),
     };
 
     // Log to Firestore (replace 'logs' with your Firestore collection name)
@@ -33,7 +33,7 @@ export const logRegistration = (user) => {
         event: "Registration",
         userUid: user.uid,
         userEmail: user.email,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toLocaleString(),
     };
 
     // Log to Firestore (replace 'logs' with your Firestore collection name)
@@ -45,7 +45,7 @@ export const logError = (error) => {
     const logData = {
         event: "Error",
         errorMessage: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toLocaleString(),
     };
 
     // Log to Firestore (replace 'logs' with your Firestore collection name)

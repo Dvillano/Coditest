@@ -7,6 +7,7 @@ import {
     collection,
     setDoc,
     getDocs,
+    orderBy,
 } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 
@@ -139,6 +140,51 @@ export const useFirestore = () => {
         }
     };
 
+    // Function to fetch user activity logs
+    const fetchUserActivityLogs = async () => {
+        try {
+            const logsQuery = query(
+                collection(db, "logs"),
+                orderBy("timestamp", "desc")
+            );
+            const logsSnapshot = await getDocs(logsQuery);
+
+            const activityLogs = logsSnapshot.docs.map((doc) => {
+                return { id: doc.id, ...doc.data() };
+            });
+
+            return activityLogs;
+        } catch (error) {
+            console.error("Error fetching user activity logs:", error);
+            return [];
+        }
+    };
+
+    // Function to fetch the total number of problems
+    const fetchTotalProblemsCount = async () => {
+        try {
+            const problemsQuery = collection(db, "problemas");
+            const problemsSnapshot = await getDocs(problemsQuery);
+
+            return problemsSnapshot.size; // Total number of problems
+        } catch (error) {
+            console.error("Error fetching total problems count:", error);
+            return 0;
+        }
+    };
+
+    // Function to fetch the total number of users
+    const fetchTotalUsersCount = async () => {
+        try {
+            const usersQuery = collection(db, "usuarios");
+            const usersSnapshot = await getDocs(usersQuery);
+            return usersSnapshot.size; // Total number of users
+        } catch (error) {
+            console.error("Error fetching total users count:", error);
+            return 0;
+        }
+    };
+
     return {
         isLoading,
         insertUser,
@@ -146,5 +192,8 @@ export const useFirestore = () => {
         saveResults,
         updatePassedProblems,
         fetchUser,
+        fetchUserActivityLogs,
+        fetchTotalProblemsCount,
+        fetchTotalUsersCount,
     };
 };

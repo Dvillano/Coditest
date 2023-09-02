@@ -46,7 +46,7 @@ const Navbar = () => {
     }, [isLoading, authUser, handleNavigate]);
 
     return (
-        <div className="bg-gray-900 py-4 px-6 flex justify-between items-center sticky top-0">
+        <div className="bg-gray-900 z-10 py-4 px-6 flex justify-between items-center sticky top-0">
             <h1 className="text-2xl font-semibold text-white">Coditest</h1>
             {authUser && (
                 <div className="flex items-center gap-4">
@@ -57,13 +57,13 @@ const Navbar = () => {
                                 onClick={() => handleNavigate("admin/users")}
                                 className="text-white cursor-pointer"
                             >
-                                Users
+                                Usuarios
                             </a>
                             <a
                                 onClick={() => handleNavigate("admin/problems")}
                                 className="text-white cursor-pointer"
                             >
-                                Problems
+                                Problemas
                             </a>
                         </>
                     )}
