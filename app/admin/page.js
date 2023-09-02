@@ -1,7 +1,7 @@
+"use client";
+
+import Admin from "../components/Admin";
+
 export default function Home() {
-    return (
-        <>
-            <h1>Pagina de admin</h1>
-        </>
-    );
+    return <Admin />;
 }

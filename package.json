@@ -9,6 +9,7 @@
         "lint": "next lint"
     },
     "dependencies": {
+        "@material-tailwind/react": "^2.1.1",
         "@uiw/codemirror-extensions-langs": "^4.21.9",
         "@uiw/react-codemirror": "^4.21.9",
         "autoprefixer": "10.4.15",

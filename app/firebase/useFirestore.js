@@ -125,11 +125,26 @@ export const useFirestore = () => {
         }
     };
 
+    const fetchUser = async (userId) => {
+        try {
+            const userRef = doc(db, "usuarios", userId);
+            const userSnapshot = await getDoc(userRef);
+
+            if (userSnapshot.exists()) {
+                const userData = userSnapshot.data();
+                return userData;
+            }
+        } catch (error) {
+            console.error("Error fetching user role:", error);
+        }
+    };
+
     return {
         isLoading,
         insertUser,
         fetchAssignedProblems,
         saveResults,
         updatePassedProblems,
+        fetchUser,
     };
 };
