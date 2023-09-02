@@ -1,10 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useFirebaseAuth } from "../firebase/useFirebaseAuth";
-import { useFirestore } from "../firebase/useFirestore";
-import { useNavigation } from "../utils/useNavigation";
-import Loading from "./Loading";
+import { useFirebaseAuth } from "../../firebase/useFirebaseAuth";
+import { useFirestore } from "../../firebase/useFirestore";
+import { useNavigation } from "../../utils/useNavigation";
+
+import Loading from "../Loading";
+
+import { Button } from "@material-tailwind/react";
 
 const Registration = () => {
     const { signUpFirebase, authUser } = useFirebaseAuth();
@@ -142,14 +145,14 @@ const Registration = () => {
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
-                    <button
+                    <Button
                         type="submit"
-                        className="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600"
+                        fullWidth
                         onClick={(e) => handleSubmit(e)}
                         disabled={isLoading}
                     >
                         {isLoading ? <Loading /> : "Registrarse"}
-                    </button>
+                    </Button>
                     <p className="mt-6 ml-1">
                         Ya tienes una cuenta ?{" "}
                         <span

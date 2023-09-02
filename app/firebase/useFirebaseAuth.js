@@ -7,6 +7,13 @@ import {
     createUserWithEmailAndPassword,
     signOut,
 } from "firebase/auth";
+import {
+    logSignIn,
+    logSignOut,
+    logRegistration,
+    logError,
+} from "./firebaseLogger"; // Import your logging functions
+
 import { auth } from "./firebaseConfig";
 import { toast } from "react-hot-toast";
 
@@ -27,9 +34,15 @@ export const useFirebaseAuth = () => {
                 password
             );
 
+            // Log the registration event
+            logRegistration(userCredential.user);
+
             toast.success("Registrado correctamente");
             return userCredential;
         } catch (error) {
+            // Log the error event
+            logError(error);
+
             toast.error("Error al registrarse");
             console.error("Error signing up:", error);
         }
@@ -38,8 +51,17 @@ export const useFirebaseAuth = () => {
     const signInFirebase = async (email, password) => {
         try {
             await signInWithEmailAndPassword(auth, email, password);
+
+            // Get the currently signed-in user
+            const user = auth.currentUser;
+
+            if (user) {
+                // Log the sign-in event
+                logSignIn(user);
+            }
             toast.success("Ingreso Correcto");
         } catch (error) {
+            logError(error);
             toast.error("Error al iniciar sesión");
 
             console.error("Error signing in:", error);
@@ -48,8 +70,18 @@ export const useFirebaseAuth = () => {
 
     const signOutFirebase = async () => {
         try {
+            // Get the currently signed-in user
+
+            const user = auth.currentUser;
+
+            if (user) {
+                // Log the sign-out event
+                logSignOut(user);
+            }
             await signOut(auth);
         } catch (error) {
+            logError(error);
+
             console.error("Error signing out:", error);
         }
     };

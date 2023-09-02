@@ -1,18 +1,22 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Loading from "./Loading";
-import { useNavigation } from '../utils/useNavigation';
-import { useFirebaseAuth } from "../firebase/useFirebaseAuth"
+import { useNavigation } from "../../utils/useNavigation";
+import { useFirebaseAuth } from "../../firebase/useFirebaseAuth";
+import { useFirestore } from "../../firebase/useFirestore";
 
+import Loading from "../Loading";
+
+import { Button } from "@material-tailwind/react";
 
 const Login = () => {
     const { authUser, isLoading, signInFirebase } = useFirebaseAuth();
+    const { fetchUser } = useFirestore();
     const { handleNavigate } = useNavigation();
-
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [user, setUser] = useState(null);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -22,13 +26,31 @@ const Login = () => {
         } catch (error) {
             console.error("Error al iniciar sesión:", error);
         }
-    }
+    };
 
     useEffect(() => {
-        if (!isLoading && authUser) {
-            handleNavigate("prueba");
+        const fetchUserFromFirestore = async () => {
+            if (authUser) {
+                try {
+                    const user = await fetchUser(authUser.uid);
+                    setUser(user);
+                } catch (error) {
+                    console.error("Error fetching user:", error);
+                }
+            }
+        };
+        fetchUserFromFirestore(); // Call the fetch function
+    }, [authUser]);
+
+    useEffect(() => {
+        if (!isLoading && user) {
+            if (user.rol === "admin") {
+                handleNavigate("admin");
+            } else if (user.rol === "candidato") {
+                handleNavigate("prueba");
+            }
         }
-    }, [isLoading, authUser]);
+    }, [isLoading, user]);
 
     if (isLoading || authUser) {
         return <Loading />;
@@ -71,13 +93,14 @@ const Login = () => {
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
-                    <button
+
+                    <Button
+                        fullWidth
                         type="submit"
-                        className="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600"
                         onClick={(e) => handleLogin(e, email, password)}
                     >
-                        Ingresar
-                    </button>
+                        Ingresar{" "}
+                    </Button>
                     <p className="mt-6 ml-1">
                         No tienes cuenta ?{" "}
                         <span

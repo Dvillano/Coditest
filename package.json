@@ -9,6 +9,7 @@
         "lint": "next lint"
     },
     "dependencies": {
+        "@heroicons/react": "^2.0.18",
         "@material-tailwind/react": "^2.1.1",
         "@uiw/codemirror-extensions-langs": "^4.21.9",
         "@uiw/react-codemirror": "^4.21.9",
@@ -17,6 +18,7 @@
         "eslint": "8.47.0",
         "eslint-config-next": "13.4.17",
         "firebase": "^10.1.0",
+        "firebase-admin": "^11.10.1",
         "firebase-tools": "^12.4.8",
         "next": "13.4.17",
         "postcss": "8.4.28",

@@ -1,18 +1,18 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useFirebaseAuth } from "../firebase/useFirebaseAuth";
-import { useFirestore } from "../firebase/useFirestore";
-import Loading from "./Loading";
+import { useFirebaseAuth } from "../../firebase/useFirebaseAuth";
+import { useFirestore } from "../../firebase/useFirestore";
+import Loading from "../Loading";
 
-export default function Admin() {
+export default function AdminDashboard() {
     const { authUser, isLoading } = useFirebaseAuth();
     const { fetchUser } = useFirestore();
 
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        const fetchUsers = async () => {
+        const fetchUserFromFirestore = async () => {
             if (authUser) {
                 try {
                     const user = await fetchUser(authUser.uid);
@@ -23,10 +23,10 @@ export default function Admin() {
             }
         };
 
-        fetchUsers();
+        fetchUserFromFirestore();
     }, [authUser]);
 
-    if (isLoading || !user) {
+    if (isLoading || !authUser || !user) {
         return <Loading />;
     }
 

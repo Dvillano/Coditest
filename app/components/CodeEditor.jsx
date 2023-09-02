@@ -100,7 +100,7 @@ function CodeEditor() {
     return (
         <div>
             {problemList.length == 0 ? (
-                <h1>Todos los problemas completados</h1>
+                <h1>No hay problemas asignados</h1>
             ) : (
                 <div>
                     <h2>{currentProblem.titulo}</h2>

@@ -1,7 +1,13 @@
 "use client";
+import React from "react";
+import AdminDashboard from "../components/Admin/AdminDashboard";
 
-import Admin from "../components/Admin";
+const Page = () => {
+    return (
+        <div>
+            <AdminDashboard />
+        </div>
+    );
+};
 
-export default function Home() {
-    return <Admin />;
-}
+export default Page;
