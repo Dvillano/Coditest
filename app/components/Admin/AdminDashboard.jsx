@@ -4,12 +4,14 @@ import React, { useEffect, useState } from "react";
 import { useFirebaseAuth } from "../../firebase/useFirebaseAuth";
 import { useFirestore } from "../../firebase/useFirestore";
 import { useNavigation } from "@/app/utils/useNavigation";
+import { useUserStatus } from "@/app/firebase/useUserStatus";
 
 import Loading from "../Loading";
 import LogTable from "./TableLogs/LogTable";
 
 import { Card, CardBody } from "@material-tailwind/react";
 import toast from "react-hot-toast";
+import UserStatusTable from "./TableLogs/UserStatusTable";
 
 export default function AdminDashboard() {
     const { authUser, isLoading } = useFirebaseAuth();
@@ -26,6 +28,7 @@ export default function AdminDashboard() {
     const [userActivityLogs, setUserActivityLogs] = useState([]);
     const [totalProblems, setTotalProblems] = useState(null);
     const [totalUsers, setTotalUsers] = useState(null);
+    const userStatuses = useUserStatus();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -71,6 +74,9 @@ export default function AdminDashboard() {
                     <>
                         {/* User Activity Logs */}
                         <LogTable logs={userActivityLogs} />
+
+                        {/* User Status Logs */}
+                        <UserStatusTable userStatusLogs={userStatuses} />
 
                         {/* Total Problems */}
                         <Card>
