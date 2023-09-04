@@ -42,12 +42,12 @@ export const logRegistration = (user) => {
 
 // Log error event
 export const logError = (error) => {
-    const logData = {
+    const errorLogData = {
         event: "Error",
         errorMessage: error.message,
         timestamp: new Date().toLocaleString(),
     };
 
     // Log to Firestore (replace 'logs' with your Firestore collection name)
-    addDoc(collection(db, "logs"), logData);
+    addDoc(collection(db, "errorLogs"), errorLogData);
 };
