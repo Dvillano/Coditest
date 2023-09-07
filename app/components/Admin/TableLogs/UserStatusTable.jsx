@@ -1,63 +1,70 @@
 "use client";
 
-import React from "react";
-import {
-    MagnifyingGlassIcon,
-    ChevronUpDownIcon,
-} from "@heroicons/react/24/outline";
-import { UserPlusIcon } from "@heroicons/react/24/solid";
-import {
-    Card,
-    CardHeader,
-    Input,
-    Typography,
-    Button,
-    CardBody,
-    Chip,
-    CardFooter,
-    Tabs,
-    TabsHeader,
-    Tab,
-    Avatar,
-    IconButton,
-    Tooltip,
-} from "@material-tailwind/react";
+import React, { useState } from "react";
+
+import { Typography, CardBody, Chip } from "@material-tailwind/react";
+import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { Button, IconButton } from "@material-tailwind/react";
 
 function UserStatusTable({ userStatusLogs }) {
     const TABLE_HEAD = ["Email", "Status", "Ultima vez Online"];
-    const TABLE_ROWS = userStatusLogs;
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const logsPerPage = 5; // Number of logs to display per page
+
+    const indexOfLastLog = currentPage * logsPerPage;
+    const indexOfFirstLog = indexOfLastLog - logsPerPage;
+    const currentLogs = userStatusLogs.slice(indexOfFirstLog, indexOfLastLog);
+
+    const next = () => {
+        if (currentPage < Math.ceil(userStatusLogs.length / logsPerPage)) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const prev = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
+    const getPageNumbers = () => {
+        const pageNumbers = [];
+        for (
+            let i = 1;
+            i <= Math.ceil(userStatusLogs.length / logsPerPage);
+            i++
+        ) {
+            pageNumbers.push(i);
+        }
+        return pageNumbers;
+    };
 
     return (
         <div>
             <CardBody className="overflow-scroll px-0">
-                <table className="mt-4 w-full min-w-max table-auto text-left">
+                <table className="w-full min-w-max table-auto text-left">
                     <thead>
                         <tr>
-                            {TABLE_HEAD.map((head, index) => (
+                            {TABLE_HEAD.map((head) => (
                                 <th
                                     key={head}
-                                    className="cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 p-4 transition-colors hover:bg-blue-gray-50"
+                                    className="border-b border-blue-gray-100 bg-blue-gray-50 p-4"
                                 >
                                     <Typography
                                         variant="small"
                                         color="blue-gray"
-                                        className="font-normal leading-none opacity-70"
+                                        className="font-normal leading-none opacity-70 flex items-center"
                                     >
-                                        {head}{" "}
-                                        {index !== TABLE_HEAD.length - 1 && (
-                                            <ChevronUpDownIcon
-                                                strokeWidth={2}
-                                                className="h-4 w-4"
-                                            />
-                                        )}
+                                        {head}
                                     </Typography>
                                 </th>
                             ))}
                         </tr>
                     </thead>
                     <tbody>
-                        {userStatusLogs.map((userStatusLog, index) => {
-                            const isLast = index === userStatusLogs.length - 1;
+                        {currentLogs.map((userStatusLog, index) => {
+                            const isLast = index === currentLogs.length - 1;
                             const classes = isLast
                                 ? "p-4"
                                 : "p-4 border-b border-blue-gray-50";
@@ -65,24 +72,20 @@ function UserStatusTable({ userStatusLogs }) {
                             return (
                                 <tr key={index}>
                                     <td className={classes}>
-                                        <div className="flex items-center gap-3">
-                                            <div className="flex flex-col">
-                                                <Typography
-                                                    variant="small"
-                                                    color="blue-gray"
-                                                    className="font-normal"
-                                                >
-                                                    {userStatusLog.email}
-                                                </Typography>
-                                                <Typography
-                                                    variant="small"
-                                                    color="blue-gray"
-                                                    className="font-normal opacity-70"
-                                                >
-                                                    {userStatusLog.email}
-                                                </Typography>
-                                            </div>
-                                        </div>
+                                        <Typography
+                                            variant="small"
+                                            color="blue-gray"
+                                            className="font-normal"
+                                        >
+                                            {userStatusLog.email}
+                                        </Typography>
+                                        <Typography
+                                            variant="small"
+                                            color="blue-gray"
+                                            className="font-normal opacity-70"
+                                        >
+                                            {userStatusLog.email}
+                                        </Typography>
                                     </td>
 
                                     <td className={classes}>
@@ -115,6 +118,41 @@ function UserStatusTable({ userStatusLogs }) {
                     </tbody>
                 </table>
             </CardBody>
+            <div className="flex items-center justify-center gap-4">
+                <Button
+                    variant="text"
+                    className="flex items-center gap-2"
+                    onClick={prev}
+                    disabled={currentPage === 1}
+                >
+                    <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />{" "}
+                    Previous
+                </Button>
+                <div className="flex justify-center items-center p-4">
+                    {getPageNumbers().map((pageNumber) => (
+                        <IconButton
+                            key={pageNumber}
+                            onClick={() => setCurrentPage(pageNumber)}
+                            color={
+                                currentPage === pageNumber ? "black" : "white"
+                            }
+                        >
+                            {pageNumber}
+                        </IconButton>
+                    ))}
+                </div>
+                <Button
+                    variant="text"
+                    className="flex items-center gap-2"
+                    onClick={next}
+                    disabled={
+                        currentPage ===
+                        Math.ceil(userStatusLogs.length / logsPerPage)
+                    }
+                >
+                    Next <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
+                </Button>
+            </div>
         </div>
     );
 }
