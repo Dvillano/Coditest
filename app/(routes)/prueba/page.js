@@ -1,11 +1,10 @@
-"use client";
 import React from "react";
-import AdminDashboard from "../components/Admin/AdminDashboard";
+import CodeEditor from "../../components/CodeEditor";
 
 const Page = () => {
     return (
         <div>
-            <AdminDashboard />
+            <CodeEditor />
         </div>
     );
 };

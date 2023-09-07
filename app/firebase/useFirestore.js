@@ -140,6 +140,24 @@ export const useFirestore = () => {
         }
     };
 
+    // Fetch all users
+    const fetchUsers = async () => {
+        try {
+            const usersCollection = collection(db, "usuarios");
+            const usersSnapshot = await getDocs(usersCollection);
+
+            if (!usersSnapshot.empty) {
+                const usersData = usersSnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                return usersData;
+            }
+        } catch (error) {
+            console.error("Error fetching users:", error);
+        }
+    };
+
     // Function to fetch user activity logs
     const fetchUserActivityLogs = async () => {
         try {
@@ -192,6 +210,7 @@ export const useFirestore = () => {
         saveResults,
         updatePassedProblems,
         fetchUser,
+        fetchUsers,
         fetchUserActivityLogs,
         fetchTotalProblemsCount,
         fetchTotalUsersCount,

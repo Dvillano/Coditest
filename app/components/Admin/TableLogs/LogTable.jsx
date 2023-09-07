@@ -33,7 +33,7 @@ const LogTable = ({ logs }) => {
 
     return (
         <div>
-            <Card className="h-full w-full overflow-scroll">
+            <Card className="h-full w-full ">
                 <div className="flex justify-center items-center p-4">
                     <h3 className="text-lg font-semibold">Logs</h3>
                 </div>

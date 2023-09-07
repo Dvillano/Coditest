@@ -1,10 +1,10 @@
-import Registration from "../components/Auth/Registration";
+import Login from "../../components/Auth/Login";
 import React from "react";
 
 const page = () => {
     return (
         <>
-            <Registration />
+            <Login />
         </>
     );
 };

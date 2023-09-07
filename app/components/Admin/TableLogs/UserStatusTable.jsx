@@ -42,82 +42,79 @@ function UserStatusTable({ userStatusLogs }) {
 
     return (
         <div>
-            <CardBody className="overflow-scroll px-0">
-                <table className="w-full min-w-max table-auto text-left">
-                    <thead>
-                        <tr>
-                            {TABLE_HEAD.map((head) => (
-                                <th
-                                    key={head}
-                                    className="border-b border-blue-gray-100 bg-blue-gray-50 p-4"
+            <table className="w-full min-w-max table-auto text-left">
+                <thead>
+                    <tr>
+                        {TABLE_HEAD.map((head) => (
+                            <th
+                                key={head}
+                                className="border-b border-blue-gray-100 bg-blue-gray-50 p-4"
+                            >
+                                <Typography
+                                    variant="small"
+                                    color="blue-gray"
+                                    className="font-normal leading-none opacity-70 flex items-center"
                                 >
+                                    {head}
+                                </Typography>
+                            </th>
+                        ))}
+                    </tr>
+                </thead>
+                <tbody>
+                    {currentLogs.map((userStatusLog, index) => {
+                        const isLast = index === currentLogs.length - 1;
+                        const classes = isLast
+                            ? "p-4"
+                            : "p-4 border-b border-blue-gray-50";
+
+                        return (
+                            <tr key={index}>
+                                <td className={classes}>
                                     <Typography
                                         variant="small"
                                         color="blue-gray"
-                                        className="font-normal leading-none opacity-70 flex items-center"
+                                        className="font-normal"
                                     >
-                                        {head}
+                                        {userStatusLog.email}
                                     </Typography>
-                                </th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {currentLogs.map((userStatusLog, index) => {
-                            const isLast = index === currentLogs.length - 1;
-                            const classes = isLast
-                                ? "p-4"
-                                : "p-4 border-b border-blue-gray-50";
+                                    <Typography
+                                        variant="small"
+                                        color="blue-gray"
+                                        className="font-normal opacity-70"
+                                    >
+                                        {userStatusLog.email}
+                                    </Typography>
+                                </td>
 
-                            return (
-                                <tr key={index}>
-                                    <td className={classes}>
-                                        <Typography
-                                            variant="small"
-                                            color="blue-gray"
-                                            className="font-normal"
-                                        >
-                                            {userStatusLog.email}
-                                        </Typography>
-                                        <Typography
-                                            variant="small"
-                                            color="blue-gray"
-                                            className="font-normal opacity-70"
-                                        >
-                                            {userStatusLog.email}
-                                        </Typography>
-                                    </td>
-
-                                    <td className={classes}>
-                                        <div className="w-max">
-                                            <Chip
-                                                variant="ghost"
-                                                size="sm"
-                                                value={userStatusLog.status}
-                                                color={
-                                                    userStatusLog.status ==
-                                                    "online"
-                                                        ? "green"
-                                                        : "blue-gray"
-                                                }
-                                            />
-                                        </div>
-                                    </td>
-                                    <td className={classes}>
-                                        <Typography
-                                            variant="small"
-                                            color="blue-gray"
-                                            className="font-normal"
-                                        >
-                                            {userStatusLog.lastOnline}
-                                        </Typography>
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
-            </CardBody>
+                                <td className={classes}>
+                                    <div className="w-max">
+                                        <Chip
+                                            variant="ghost"
+                                            size="sm"
+                                            value={userStatusLog.status}
+                                            color={
+                                                userStatusLog.status == "online"
+                                                    ? "green"
+                                                    : "blue-gray"
+                                            }
+                                        />
+                                    </div>
+                                </td>
+                                <td className={classes}>
+                                    <Typography
+                                        variant="small"
+                                        color="blue-gray"
+                                        className="font-normal"
+                                    >
+                                        {userStatusLog.lastOnline}
+                                    </Typography>
+                                </td>
+                            </tr>
+                        );
+                    })}
+                </tbody>
+            </table>
             <div className="flex items-center justify-center gap-4">
                 <Button
                     variant="text"

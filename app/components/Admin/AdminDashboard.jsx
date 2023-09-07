@@ -79,27 +79,29 @@ export default function AdminDashboard() {
                         <UserStatusTable userStatusLogs={userStatuses} />
 
                         {/* Total Problems */}
-                        <Card>
-                            <CardBody>
-                                <h3 className="text-lg font-semibold mb-4">
-                                    Total Problems
-                                </h3>
-                                <p className="text-3xl font-bold">
-                                    {totalProblems}
-                                </p>
-                            </CardBody>
-                        </Card>
-                        {/* Total Users */}
-                        <Card>
-                            <CardBody>
-                                <h3 className="text-lg font-semibold mb-4">
-                                    Total Users
-                                </h3>
-                                <p className="text-3xl font-bold">
-                                    {totalUsers}
-                                </p>
-                            </CardBody>
-                        </Card>
+                        <div className="flex">
+                            <Card>
+                                <CardBody>
+                                    <h3 className="text-lg font-semibold mb-4">
+                                        Total Problems
+                                    </h3>
+                                    <p className="text-3xl font-bold">
+                                        {totalProblems}
+                                    </p>
+                                </CardBody>
+                            </Card>
+                            {/* Total Users */}
+                            <Card>
+                                <CardBody>
+                                    <h3 className="text-lg font-semibold mb-4">
+                                        Total Users
+                                    </h3>
+                                    <p className="text-3xl font-bold">
+                                        {totalUsers}
+                                    </p>
+                                </CardBody>
+                            </Card>
+                        </div>
                     </>
                 )}
         </>
