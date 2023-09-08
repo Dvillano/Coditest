@@ -31,36 +31,34 @@ import {
     Tooltip,
 } from "@material-tailwind/react";
 
-const TABS = [
-    {
-        label: "Todos",
-        value: "todos",
-    },
-    {
-        label: "Candidatos",
-        value: "candidatos",
-    },
-    {
-        label: "Entrevistadores",
-        value: "entrevistadores",
-    },
-];
-
-const TABLE_HEAD = [
-    "ID",
-    "Nombre",
-    "Apellido",
-    "Email",
-    "Rol",
-    "Nivel",
-    "Tiene pruebas asignadas",
-    "",
-    "",
-];
-
-const TABLE_ROWS = [];
-
 function UserManagement() {
+    const TABLE_HEAD = [
+        "ID",
+        "Nombre",
+        "Apellido",
+        "Email",
+        "Rol",
+        "Nivel",
+        "Tiene pruebas asignadas",
+        "",
+        " ",
+    ];
+
+    const TABS = [
+        {
+            label: "Todos",
+            value: "todos",
+        },
+        {
+            label: "Candidatos",
+            value: "candidatos",
+        },
+        {
+            label: "Entrevistadores",
+            value: "entrevistadores",
+        },
+    ];
+
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
     const logsPerPage = 5; // Number of logs to display per page
@@ -101,6 +99,25 @@ function UserManagement() {
         return pageNumbers;
     };
 
+    const [searchQuery, setSearchQuery] = useState("");
+
+    const handleSearch = (event) => {
+        const query = event.target.value.toLowerCase();
+        setSearchQuery(query);
+    };
+
+    const filteredLogs = listaUsuarios.filter(
+        (user) =>
+            user.nombre.toLowerCase().includes(searchQuery) ||
+            user.apellido.toLowerCase().includes(searchQuery) ||
+            user.email.toLowerCase().includes(searchQuery)
+    );
+
+    const isSearching = searchQuery !== "";
+
+    // Render all logs if searching, otherwise use pagination
+    const logsToRender = isSearching ? filteredLogs : currentLogs;
+
     useEffect(() => {
         const fetchData = async () => {
             if (authUser) {
@@ -127,7 +144,7 @@ function UserManagement() {
         };
 
         fetchData();
-    }, [authUser, handleNavigate, fetchUser, fetchUsers]);
+    }, [authUser]);
 
     if (isLoading || !authUser) {
         return <Loading />;
@@ -172,7 +189,7 @@ function UserManagement() {
                                 <Tabs value="todos" className="w-full md:w-max">
                                     <TabsHeader>
                                         {TABS.map(({ label, value }) => (
-                                            <Tab key={value} value={value}>
+                                            <Tab key={label} value={value}>
                                                 &nbsp;&nbsp;{label}&nbsp;&nbsp;
                                             </Tab>
                                         ))}
@@ -180,15 +197,17 @@ function UserManagement() {
                                 </Tabs>
                                 <div className="w-full md:w-72">
                                     <Input
-                                        label="Search"
+                                        label="Buscar"
                                         icon={
                                             <MagnifyingGlassIcon className="h-5 w-5" />
                                         }
+                                        value={searchQuery}
+                                        onChange={handleSearch}
                                     />
                                 </div>
                             </div>
                         </CardHeader>
-                        <CardBody className="overflow-scroll px-0">
+                        <CardBody className="px-0">
                             <table className="mt-4 w-full min-w-max table-auto text-left">
                                 <thead>
                                     <tr>
@@ -209,7 +228,7 @@ function UserManagement() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {currentLogs.map(
+                                    {logsToRender.map(
                                         (
                                             {
                                                 id,
@@ -224,13 +243,13 @@ function UserManagement() {
                                         ) => {
                                             const isLast =
                                                 index ===
-                                                currentLogs.length - 1;
+                                                logsToRender.length - 1;
                                             const classes = isLast
                                                 ? "p-4"
                                                 : "p-4 border-b border-blue-gray-50";
 
                                             return (
-                                                <tr key={index}>
+                                                <tr key={id}>
                                                     <td className={classes}>
                                                         <div className="flex items-center gap-3">
                                                             <div className="flex flex-col">
@@ -338,7 +357,10 @@ function UserManagement() {
                                                         <div className="flex flex-col">
                                                             <Tooltip content="Borrar usuario">
                                                                 <IconButton variant="text">
-                                                                    <TrashIcon className="h-4 w-4" />
+                                                                    <TrashIcon
+                                                                        className="h-4 w-4"
+                                                                        color="red"
+                                                                    />
                                                                 </IconButton>
                                                             </Tooltip>
                                                         </div>
@@ -350,54 +372,56 @@ function UserManagement() {
                                 </tbody>
                             </table>
                         </CardBody>
-                        <div className="flex items-center justify-center gap-4">
-                            <Button
-                                variant="text"
-                                className="flex items-center gap-2"
-                                onClick={prev}
-                                disabled={currentPage === 1}
-                            >
-                                <ArrowLeftIcon
-                                    strokeWidth={2}
-                                    className="h-4 w-4"
-                                />{" "}
-                                Previous
-                            </Button>
-                            <div className="flex justify-center items-center p-4">
-                                {getPageNumbers().map((pageNumber) => (
-                                    <IconButton
-                                        key={pageNumber}
-                                        onClick={() =>
-                                            setCurrentPage(pageNumber)
-                                        }
-                                        color={
-                                            currentPage === pageNumber
-                                                ? "black"
-                                                : "white"
-                                        }
-                                    >
-                                        {pageNumber}
-                                    </IconButton>
-                                ))}
+                        {isSearching ? null : (
+                            <div className="flex items-center justify-center gap-4">
+                                <Button
+                                    variant="text"
+                                    className="flex items-center gap-2"
+                                    onClick={prev}
+                                    disabled={currentPage === 1}
+                                >
+                                    <ArrowLeftIcon
+                                        strokeWidth={2}
+                                        className="h-4 w-4"
+                                    />{" "}
+                                    Previous
+                                </Button>
+                                <div className="flex justify-center items-center p-4">
+                                    {getPageNumbers().map((pageNumber) => (
+                                        <IconButton
+                                            key={pageNumber}
+                                            onClick={() =>
+                                                setCurrentPage(pageNumber)
+                                            }
+                                            color={
+                                                currentPage === pageNumber
+                                                    ? "black"
+                                                    : "white"
+                                            }
+                                        >
+                                            {pageNumber}
+                                        </IconButton>
+                                    ))}
+                                </div>
+                                <Button
+                                    variant="text"
+                                    className="flex items-center gap-2"
+                                    onClick={next}
+                                    disabled={
+                                        currentPage ===
+                                        Math.ceil(
+                                            listaUsuarios.length / logsPerPage
+                                        )
+                                    }
+                                >
+                                    Next{" "}
+                                    <ArrowRightIcon
+                                        strokeWidth={2}
+                                        className="h-4 w-4"
+                                    />
+                                </Button>
                             </div>
-                            <Button
-                                variant="text"
-                                className="flex items-center gap-2"
-                                onClick={next}
-                                disabled={
-                                    currentPage ===
-                                    Math.ceil(
-                                        listaUsuarios.length / logsPerPage
-                                    )
-                                }
-                            >
-                                Next{" "}
-                                <ArrowRightIcon
-                                    strokeWidth={2}
-                                    className="h-4 w-4"
-                                />
-                            </Button>
-                        </div>
+                        )}
                     </Card>
                 </>
             )}

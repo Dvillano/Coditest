@@ -8,6 +8,7 @@ import {
     setDoc,
     getDocs,
     orderBy,
+    limit,
 } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 
@@ -163,7 +164,8 @@ export const useFirestore = () => {
         try {
             const logsQuery = query(
                 collection(db, "logs"),
-                orderBy("timestamp", "desc")
+                orderBy("timestamp", "desc"),
+                limit(20)
             );
             const logsSnapshot = await getDocs(logsQuery);
 
