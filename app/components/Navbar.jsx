@@ -46,7 +46,14 @@ const Navbar = () => {
 
     return (
         <div className="bg-gray-900 z-50 py-4 px-6 flex justify-between items-center sticky top-0">
-            <h1 className="text-2xl font-semibold text-white">Coditest</h1>
+            <h1 className="text-2xl font-semibold text-white">
+                <a
+                    onClick={() => handleNavigate("/")}
+                    className="text-white cursor-pointer"
+                >
+                    Coditest
+                </a>
+            </h1>
             {authUser && (
                 <div className="flex items-center gap-4">
                     <p className="text-white">{authUser.email}</p>
