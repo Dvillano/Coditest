@@ -1,23 +1,20 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useFirestore } from "../../firebase/useFirestore";
-import { useFirebaseAuth } from "../../firebase/useFirebaseAuth";
+import { useFirestore } from "../../../firebase/useFirestore";
+import { useFirebaseAuth } from "../../../firebase/useFirebaseAuth";
 import { useNavigation } from "@/app/utils/useNavigation";
-import Loading from "../Loading";
+import Loading from "../../Loading";
 import toast from "react-hot-toast";
-import {
-    MagnifyingGlassIcon,
-    ArrowRightIcon,
-    ArrowLeftIcon,
-} from "@heroicons/react/24/outline";
-import { PencilIcon, UserPlusIcon, TrashIcon } from "@heroicons/react/24/solid";
+import UserEditModal from "./UserEditModal";
+
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { TrashIcon } from "@heroicons/react/24/solid";
 import {
     Card,
     CardHeader,
     Input,
     Typography,
-    Button,
     CardBody,
     Chip,
     Tabs,
@@ -67,6 +64,11 @@ function UserManagement() {
     const [listaUsuarios, setListaUsuarios] = useState([]);
     const [selectedTab, setSelectedTab] = useState("todos");
     const [searchQuery, setSearchQuery] = useState("");
+    const [selectedUserId, setSelectedUserId] = useState(null);
+
+    const handleRowClick = (userId) => {
+        setSelectedUserId(userId); //TODO Se actualiza el state por cada .map renderizado
+    };
 
     const handleSearch = (event) => {
         const query = event.target.value.toLowerCase();
@@ -154,18 +156,6 @@ function UserManagement() {
                                         Informacion acerca de todos los usuarios
                                     </Typography>
                                 </div>
-                                <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-                                    <Button
-                                        className="flex items-center gap-3"
-                                        size="sm"
-                                    >
-                                        <UserPlusIcon
-                                            strokeWidth={2}
-                                            className="h-4 w-4"
-                                        />{" "}
-                                        Agregar Usuario
-                                    </Button>
-                                </div>
                             </div>
                             <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
                                 <Tabs
@@ -241,7 +231,12 @@ function UserManagement() {
                                                 : "p-4 border-b border-blue-gray-50";
 
                                             return (
-                                                <tr key={id}>
+                                                <tr
+                                                    key={id}
+                                                    onClick={() =>
+                                                        handleRowClick(id)
+                                                    }
+                                                >
                                                     <td className={classes}>
                                                         <div className="flex items-center gap-3">
                                                             <div className="flex flex-col">
@@ -338,11 +333,11 @@ function UserManagement() {
                                                     </td>
                                                     <td className={classes}>
                                                         <div className="flex flex-col">
-                                                            <Tooltip content="Editar usuario">
-                                                                <IconButton variant="text">
-                                                                    <PencilIcon className="h-4 w-4" />
-                                                                </IconButton>
-                                                            </Tooltip>
+                                                            <UserEditModal
+                                                                idUser={
+                                                                    selectedUserId
+                                                                }
+                                                            />
                                                         </div>
                                                     </td>
                                                     <td className={classes}>

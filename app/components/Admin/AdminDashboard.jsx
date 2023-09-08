@@ -83,7 +83,7 @@ export default function AdminDashboard() {
                             <Card>
                                 <CardBody>
                                     <h3 className="text-lg font-semibold mb-4">
-                                        Total Problems
+                                        Cantidad de problemas
                                     </h3>
                                     <p className="text-3xl font-bold">
                                         {totalProblems}
@@ -94,7 +94,7 @@ export default function AdminDashboard() {
                             <Card>
                                 <CardBody>
                                     <h3 className="text-lg font-semibold mb-4">
-                                        Total Users
+                                        Cantidad de usuarios
                                     </h3>
                                     <p className="text-3xl font-bold">
                                         {totalUsers}

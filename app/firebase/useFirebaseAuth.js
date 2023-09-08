@@ -50,6 +50,7 @@ export const useFirebaseAuth = () => {
 
             toast.error("Error al registrarse");
             console.error("Error signing up:", error);
+            throw error;
         }
     };
 
