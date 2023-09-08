@@ -9,8 +9,13 @@ import { useNavigation } from "@/app/utils/useNavigation";
 import Loading from "../Loading";
 
 import toast from "react-hot-toast";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { PencilIcon, UserPlusIcon } from "@heroicons/react/24/solid";
+import {
+    MagnifyingGlassIcon,
+    ArrowRightIcon,
+    ArrowLeftIcon,
+} from "@heroicons/react/24/outline";
+import { PencilIcon, UserPlusIcon, TrashIcon } from "@heroicons/react/24/solid";
+
 import {
     Card,
     CardHeader,
@@ -19,11 +24,9 @@ import {
     Button,
     CardBody,
     Chip,
-    CardFooter,
     Tabs,
     TabsHeader,
     Tab,
-    Avatar,
     IconButton,
     Tooltip,
 } from "@material-tailwind/react";
@@ -52,26 +55,63 @@ const TABLE_HEAD = [
     "Nivel",
     "Tiene pruebas asignadas",
     "",
+    "",
 ];
 
 const TABLE_ROWS = [];
 
 function UserManagement() {
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const logsPerPage = 5; // Number of logs to display per page
+
     const { authUser, isLoading } = useFirebaseAuth();
     const { handleNavigate } = useNavigation();
     const { fetchUser, fetchUsers } = useFirestore();
 
     const [user, setUser] = useState(null);
-    const [listaUsuarios, setListaUsuarios] = useState(null);
+    const [listaUsuarios, setListaUsuarios] = useState([]);
+
+    // Calculate indexes for pagination
+    const indexOfLastLog = currentPage * logsPerPage;
+    const indexOfFirstLog = indexOfLastLog - logsPerPage;
+    const currentLogs = listaUsuarios.slice(indexOfFirstLog, indexOfLastLog);
+
+    const next = () => {
+        if (currentPage < Math.ceil(listaUsuarios.length / logsPerPage)) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const prev = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
+    const getPageNumbers = () => {
+        const pageNumbers = [];
+        for (
+            let i = 1;
+            i <= Math.ceil(listaUsuarios.length / logsPerPage);
+            i++
+        ) {
+            pageNumbers.push(i);
+        }
+        return pageNumbers;
+    };
 
     useEffect(() => {
         const fetchData = async () => {
             if (authUser) {
                 try {
                     const user = await fetchUser(authUser.uid);
-                    if (user) {
-                        setUser(user);
+                    if (!user) {
+                        toast.error("Acceso no autorizado");
+                        handleNavigate("/");
+                        return;
                     }
+                    setUser(user);
 
                     if (user.rol === "admin") {
                         const usuarios = await fetchUsers();
@@ -87,7 +127,7 @@ function UserManagement() {
         };
 
         fetchData();
-    }, [authUser]);
+    }, [authUser, handleNavigate, fetchUser, fetchUsers]);
 
     if (isLoading || !authUser) {
         return <Loading />;
@@ -169,7 +209,7 @@ function UserManagement() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {listaUsuarios.map(
+                                    {currentLogs.map(
                                         (
                                             {
                                                 id,
@@ -184,7 +224,7 @@ function UserManagement() {
                                         ) => {
                                             const isLast =
                                                 index ===
-                                                listaUsuarios.length - 1;
+                                                currentLogs.length - 1;
                                             const classes = isLast
                                                 ? "p-4"
                                                 : "p-4 border-b border-blue-gray-50";
@@ -287,9 +327,18 @@ function UserManagement() {
                                                     </td>
                                                     <td className={classes}>
                                                         <div className="flex flex-col">
-                                                            <Tooltip content="Edit User">
+                                                            <Tooltip content="Editar usuario">
                                                                 <IconButton variant="text">
                                                                     <PencilIcon className="h-4 w-4" />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        </div>
+                                                    </td>
+                                                    <td className={classes}>
+                                                        <div className="flex flex-col">
+                                                            <Tooltip content="Borrar usuario">
+                                                                <IconButton variant="text">
+                                                                    <TrashIcon className="h-4 w-4" />
                                                                 </IconButton>
                                                             </Tooltip>
                                                         </div>
@@ -301,23 +350,54 @@ function UserManagement() {
                                 </tbody>
                             </table>
                         </CardBody>
-                        <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-                            <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="font-normal"
+                        <div className="flex items-center justify-center gap-4">
+                            <Button
+                                variant="text"
+                                className="flex items-center gap-2"
+                                onClick={prev}
+                                disabled={currentPage === 1}
                             >
-                                Page 1 of 10
-                            </Typography>
-                            <div className="flex gap-2">
-                                <Button variant="outlined" size="sm">
-                                    Previous
-                                </Button>
-                                <Button variant="outlined" size="sm">
-                                    Next
-                                </Button>
+                                <ArrowLeftIcon
+                                    strokeWidth={2}
+                                    className="h-4 w-4"
+                                />{" "}
+                                Previous
+                            </Button>
+                            <div className="flex justify-center items-center p-4">
+                                {getPageNumbers().map((pageNumber) => (
+                                    <IconButton
+                                        key={pageNumber}
+                                        onClick={() =>
+                                            setCurrentPage(pageNumber)
+                                        }
+                                        color={
+                                            currentPage === pageNumber
+                                                ? "black"
+                                                : "white"
+                                        }
+                                    >
+                                        {pageNumber}
+                                    </IconButton>
+                                ))}
                             </div>
-                        </CardFooter>
+                            <Button
+                                variant="text"
+                                className="flex items-center gap-2"
+                                onClick={next}
+                                disabled={
+                                    currentPage ===
+                                    Math.ceil(
+                                        listaUsuarios.length / logsPerPage
+                                    )
+                                }
+                            >
+                                Next{" "}
+                                <ArrowRightIcon
+                                    strokeWidth={2}
+                                    className="h-4 w-4"
+                                />
+                            </Button>
+                        </div>
                     </Card>
                 </>
             )}

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 
-import { Typography, CardBody, Chip } from "@material-tailwind/react";
+import { Typography, Chip } from "@material-tailwind/react";
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { Button, IconButton } from "@material-tailwind/react";
 
