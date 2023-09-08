@@ -1,13 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-
 import { useFirestore } from "../../firebase/useFirestore";
 import { useFirebaseAuth } from "../../firebase/useFirebaseAuth";
 import { useNavigation } from "@/app/utils/useNavigation";
-
 import Loading from "../Loading";
-
 import toast from "react-hot-toast";
 import {
     MagnifyingGlassIcon,
@@ -15,7 +12,6 @@ import {
     ArrowLeftIcon,
 } from "@heroicons/react/24/outline";
 import { PencilIcon, UserPlusIcon, TrashIcon } from "@heroicons/react/24/solid";
-
 import {
     Card,
     CardHeader,
@@ -51,17 +47,17 @@ function UserManagement() {
         },
         {
             label: "Candidatos",
-            value: "candidatos",
+            value: "candidato",
         },
         {
             label: "Entrevistadores",
-            value: "entrevistadores",
+            value: "entrevistador",
+        },
+        {
+            label: "Admins",
+            value: "admin",
         },
     ];
-
-    // Pagination
-    const [currentPage, setCurrentPage] = useState(1);
-    const logsPerPage = 5; // Number of logs to display per page
 
     const { authUser, isLoading } = useFirebaseAuth();
     const { handleNavigate } = useNavigation();
@@ -69,36 +65,7 @@ function UserManagement() {
 
     const [user, setUser] = useState(null);
     const [listaUsuarios, setListaUsuarios] = useState([]);
-
-    // Calculate indexes for pagination
-    const indexOfLastLog = currentPage * logsPerPage;
-    const indexOfFirstLog = indexOfLastLog - logsPerPage;
-    const currentLogs = listaUsuarios.slice(indexOfFirstLog, indexOfLastLog);
-
-    const next = () => {
-        if (currentPage < Math.ceil(listaUsuarios.length / logsPerPage)) {
-            setCurrentPage(currentPage + 1);
-        }
-    };
-
-    const prev = () => {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-        }
-    };
-
-    const getPageNumbers = () => {
-        const pageNumbers = [];
-        for (
-            let i = 1;
-            i <= Math.ceil(listaUsuarios.length / logsPerPage);
-            i++
-        ) {
-            pageNumbers.push(i);
-        }
-        return pageNumbers;
-    };
-
+    const [selectedTab, setSelectedTab] = useState("todos");
     const [searchQuery, setSearchQuery] = useState("");
 
     const handleSearch = (event) => {
@@ -106,17 +73,25 @@ function UserManagement() {
         setSearchQuery(query);
     };
 
-    const filteredLogs = listaUsuarios.filter(
-        (user) =>
-            user.nombre.toLowerCase().includes(searchQuery) ||
-            user.apellido.toLowerCase().includes(searchQuery) ||
-            user.email.toLowerCase().includes(searchQuery)
-    );
+    const handleTabChange = (tabValue) => {
+        setSelectedTab(tabValue);
+    };
 
-    const isSearching = searchQuery !== "";
+    const filterUsersByTab = (users, tabValue) => {
+        if (tabValue === "todos") {
+            return users;
+        }
+        return users.filter((user) => user.rol === tabValue);
+    };
 
-    // Render all logs if searching, otherwise use pagination
-    const logsToRender = isSearching ? filteredLogs : currentLogs;
+    const filterUsersBySearch = (users, query) => {
+        return users.filter(
+            (user) =>
+                user.nombre.toLowerCase().includes(query) ||
+                user.apellido.toLowerCase().includes(query) ||
+                user.email.toLowerCase().includes(query)
+        );
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -149,6 +124,13 @@ function UserManagement() {
     if (isLoading || !authUser) {
         return <Loading />;
     }
+
+    // Filter users based on selected tab and search query
+    const filteredUsersByTab = filterUsersByTab(listaUsuarios, selectedTab);
+    const filteredUsersBySearch = filterUsersBySearch(
+        filteredUsersByTab,
+        searchQuery
+    );
 
     return (
         <>
@@ -186,10 +168,19 @@ function UserManagement() {
                                 </div>
                             </div>
                             <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-                                <Tabs value="todos" className="w-full md:w-max">
+                                <Tabs
+                                    value={selectedTab}
+                                    className="w-full md:w-max"
+                                >
                                     <TabsHeader>
                                         {TABS.map(({ label, value }) => (
-                                            <Tab key={label} value={value}>
+                                            <Tab
+                                                key={label}
+                                                value={value}
+                                                onClick={() =>
+                                                    handleTabChange(value)
+                                                }
+                                            >
                                                 &nbsp;&nbsp;{label}&nbsp;&nbsp;
                                             </Tab>
                                         ))}
@@ -228,7 +219,7 @@ function UserManagement() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {logsToRender.map(
+                                    {filteredUsersBySearch.map(
                                         (
                                             {
                                                 id,
@@ -243,7 +234,8 @@ function UserManagement() {
                                         ) => {
                                             const isLast =
                                                 index ===
-                                                logsToRender.length - 1;
+                                                filteredUsersBySearch.length -
+                                                    1;
                                             const classes = isLast
                                                 ? "p-4"
                                                 : "p-4 border-b border-blue-gray-50";
@@ -372,56 +364,6 @@ function UserManagement() {
                                 </tbody>
                             </table>
                         </CardBody>
-                        {isSearching ? null : (
-                            <div className="flex items-center justify-center gap-4">
-                                <Button
-                                    variant="text"
-                                    className="flex items-center gap-2"
-                                    onClick={prev}
-                                    disabled={currentPage === 1}
-                                >
-                                    <ArrowLeftIcon
-                                        strokeWidth={2}
-                                        className="h-4 w-4"
-                                    />{" "}
-                                    Previous
-                                </Button>
-                                <div className="flex justify-center items-center p-4">
-                                    {getPageNumbers().map((pageNumber) => (
-                                        <IconButton
-                                            key={pageNumber}
-                                            onClick={() =>
-                                                setCurrentPage(pageNumber)
-                                            }
-                                            color={
-                                                currentPage === pageNumber
-                                                    ? "black"
-                                                    : "white"
-                                            }
-                                        >
-                                            {pageNumber}
-                                        </IconButton>
-                                    ))}
-                                </div>
-                                <Button
-                                    variant="text"
-                                    className="flex items-center gap-2"
-                                    onClick={next}
-                                    disabled={
-                                        currentPage ===
-                                        Math.ceil(
-                                            listaUsuarios.length / logsPerPage
-                                        )
-                                    }
-                                >
-                                    Next{" "}
-                                    <ArrowRightIcon
-                                        strokeWidth={2}
-                                        className="h-4 w-4"
-                                    />
-                                </Button>
-                            </div>
-                        )}
                     </Card>
                 </>
             )}
