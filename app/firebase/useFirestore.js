@@ -3,7 +3,7 @@ import {
     doc,
     getDoc,
     setDoc,
-    updateDoc,
+    deleteDoc,
     query,
     where,
     collection,
@@ -14,8 +14,6 @@ import {
 import { db } from "./firebaseConfig";
 
 export const useFirestore = () => {
-    const [isLoading, setIsLoading] = useState(true);
-
     const insertUser = async (user, userData) => {
         const userRef = doc(collection(db, "usuarios"), user.uid);
 
@@ -35,6 +33,15 @@ export const useFirestore = () => {
             throw new Error(
                 "Error al editar informacion del usuario: " + error.message
             );
+        }
+    };
+
+    // Borrar documento
+    const deleteDocument = async (collectionName, idDoc) => {
+        await deleteDoc(doc(db, collectionName, idDoc));
+        try {
+        } catch (error) {
+            throw new Error("Error al eliminar usuario: " + error.message);
         }
     };
 
@@ -218,7 +225,6 @@ export const useFirestore = () => {
     };
 
     return {
-        isLoading,
         insertUser,
         fetchAssignedProblems,
         saveResults,
@@ -229,5 +235,6 @@ export const useFirestore = () => {
         fetchTotalProblemsCount,
         fetchTotalUsersCount,
         editDocument,
+        deleteDocument,
     };
 };

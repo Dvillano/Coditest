@@ -53,7 +53,7 @@ function UserEditModal({ idUser, isEditComplete }) {
             }
         } catch (error) {
             toast.error("No se pudo guardar cambios");
-            console.error("Error al registrarse:", error);
+            console.error("Error al guardar cambios:", error);
         }
     };
     return (

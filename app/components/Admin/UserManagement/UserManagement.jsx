@@ -7,9 +7,10 @@ import { useNavigation } from "@/app/utils/useNavigation";
 import Loading from "../../Loading";
 import toast from "react-hot-toast";
 import UserEditModal from "./UserEditModal";
+import UserDeleteModal from "./UserDeleteModal";
 
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { TrashIcon } from "@heroicons/react/24/solid";
+
 import {
     Card,
     CardHeader,
@@ -20,8 +21,6 @@ import {
     Tabs,
     TabsHeader,
     Tab,
-    IconButton,
-    Tooltip,
 } from "@material-tailwind/react";
 
 function UserManagement() {
@@ -66,6 +65,7 @@ function UserManagement() {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedUserId, setSelectedUserId] = useState(null);
     const [isEditComplete, setIsEditComplete] = useState(false);
+    const [isDeleteComplete, setIsDeleteComplete] = useState(false);
 
     const handleRowClick = (userId) => {
         setSelectedUserId(userId); //TODO Se actualiza el state por cada .map renderizado
@@ -112,6 +112,7 @@ function UserManagement() {
                         const usuarios = await fetchUsers();
                         setListaUsuarios(usuarios);
                         setIsEditComplete(false);
+                        setIsDeleteComplete(false);
                     } else {
                         toast.error("Acceso no autorizado");
                         handleNavigate("/");
@@ -123,7 +124,7 @@ function UserManagement() {
         };
 
         fetchData();
-    }, [authUser, isEditComplete]);
+    }, [authUser, isEditComplete, isDeleteComplete]);
 
     if (isLoading || !authUser) {
         return <Loading />;
@@ -347,14 +348,14 @@ function UserManagement() {
                                                     </td>
                                                     <td className={classes}>
                                                         <div className="flex flex-col">
-                                                            <Tooltip content="Borrar usuario">
-                                                                <IconButton variant="text">
-                                                                    <TrashIcon
-                                                                        className="h-4 w-4"
-                                                                        color="red"
-                                                                    />
-                                                                </IconButton>
-                                                            </Tooltip>
+                                                            <UserDeleteModal
+                                                                idUser={
+                                                                    selectedUserId
+                                                                }
+                                                                isDeleteComplete={
+                                                                    setIsDeleteComplete
+                                                                }
+                                                            />
                                                         </div>
                                                     </td>
                                                 </tr>
