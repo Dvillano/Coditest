@@ -45,6 +45,20 @@ export const useFirestore = () => {
         }
     };
 
+    // Listar problemas
+    const fetchProblems = async () => {
+        try {
+            const problemsSnapshot = await getDocs(collection(db, "problemas"));
+            if (!problemsSnapshot.empty) {
+                const problemsData = problemsSnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                return problemsData;
+            }
+        } catch (error) {}
+    };
+
     const fetchAssignedProblems = async (userId) => {
         try {
             //Check if the user has assigned problem
@@ -236,5 +250,6 @@ export const useFirestore = () => {
         fetchTotalUsersCount,
         editDocument,
         deleteDocument,
+        fetchProblems,
     };
 };
