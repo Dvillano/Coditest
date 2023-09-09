@@ -65,6 +65,7 @@ function UserManagement() {
     const [selectedTab, setSelectedTab] = useState("todos");
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedUserId, setSelectedUserId] = useState(null);
+    const [isEditComplete, setIsEditComplete] = useState(false);
 
     const handleRowClick = (userId) => {
         setSelectedUserId(userId); //TODO Se actualiza el state por cada .map renderizado
@@ -110,6 +111,7 @@ function UserManagement() {
                     if (user.rol === "admin") {
                         const usuarios = await fetchUsers();
                         setListaUsuarios(usuarios);
+                        setIsEditComplete(false);
                     } else {
                         toast.error("Acceso no autorizado");
                         handleNavigate("/");
@@ -121,7 +123,7 @@ function UserManagement() {
         };
 
         fetchData();
-    }, [authUser]);
+    }, [authUser, isEditComplete]);
 
     if (isLoading || !authUser) {
         return <Loading />;
@@ -336,6 +338,9 @@ function UserManagement() {
                                                             <UserEditModal
                                                                 idUser={
                                                                     selectedUserId
+                                                                }
+                                                                isEditComplete={
+                                                                    setIsEditComplete
                                                                 }
                                                             />
                                                         </div>

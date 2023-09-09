@@ -7,18 +7,21 @@ import { useState } from "react";
 import { Button, Dialog, Tooltip, IconButton } from "@material-tailwind/react";
 import { PencilIcon } from "@heroicons/react/24/solid";
 
-function UserEditModal({ idUser }) {
+import toast from "react-hot-toast";
+
+function UserEditModal({ idUser, isEditComplete }) {
     const initialFormData = {
         nombre: "",
         apellido: "",
-        email: "",
         rol: "candidato",
         nivel: "principiante",
-        tienePruebasAsignadas: false,
     };
+
+    const { editDocument } = useFirestore();
 
     const [formData, setFormData] = useState(initialFormData);
     const [open, setOpen] = useState(false);
+
     const handleOpen = () => setOpen(!open);
 
     const handleInputChange = (e) => {
@@ -29,13 +32,13 @@ function UserEditModal({ idUser }) {
             [name]: value,
         });
     };
-    const handleInsertUser = async (e) => {
+
+    const handleEditUser = async (e) => {
         e.preventDefault();
         try {
             if (
                 formData.nombre &&
                 formData.apellido &&
-                formData.email &&
                 formData.rol &&
                 formData.nivel
             ) {
@@ -43,11 +46,13 @@ function UserEditModal({ idUser }) {
                     ? (formData.nivel = null)
                     : formData.nivel;
 
-                //TODO EDIT LOGIC
-
+                await editDocument("usuarios", idUser, formData);
                 setOpen(false);
+                toast.success("Cambios guardados!");
+                isEditComplete(true);
             }
         } catch (error) {
+            toast.error("No se pudo guardar cambios");
             console.error("Error al registrarse:", error);
         }
     };
@@ -151,44 +156,13 @@ function UserEditModal({ idUser }) {
                                     )}
                                 </select>
                             </div>
-                            <div className="mb-4">
-                                <label
-                                    className="block text-sm font-semibold text-gray-800"
-                                    htmlFor="email"
-                                >
-                                    Email
-                                </label>
-                                <input
-                                    id="email"
-                                    name="email"
-                                    className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-gray-400 focus:ring-gray-300 focus:outline-none focus:ring focus:ring-opacity-40"
-                                    type="email"
-                                    value={formData.email}
-                                    onChange={handleInputChange}
-                                />
-                            </div>
-                            <div className="mb-2">
-                                <label
-                                    className="block text-sm font-semibold text-gray-800"
-                                    htmlFor="password"
-                                >
-                                    Contraseña
-                                </label>
-                                <input
-                                    id="password"
-                                    name="password"
-                                    className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-gray-400 focus:ring-gray-300 focus:outline-none focus:ring focus:ring-opacity-40"
-                                    type="password"
-                                    value={formData.password}
-                                    onChange={handleInputChange}
-                                />
-                            </div>
+
                             <Button
                                 type="submit"
                                 fullWidth
-                                onClick={(e) => handleInsertUser(e)}
+                                onClick={(e) => handleEditUser(e)}
                             >
-                                Agregar usuario
+                                Guardar cambios
                             </Button>
                         </form>
                     </div>

@@ -2,10 +2,11 @@ import { useState } from "react";
 import {
     doc,
     getDoc,
+    setDoc,
+    updateDoc,
     query,
     where,
     collection,
-    setDoc,
     getDocs,
     orderBy,
     limit,
@@ -16,13 +17,24 @@ export const useFirestore = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     const insertUser = async (user, userData) => {
-        console.log(user, userData);
         const userRef = doc(collection(db, "usuarios"), user.uid);
 
         try {
             await setDoc(userRef, userData, { merge: true });
         } catch (error) {
             throw new Error("Error storing user info: " + error.message);
+        }
+    };
+
+    // Editar documento
+    const editDocument = async (collectionName, idDoc, data) => {
+        const docRef = doc(db, collectionName, idDoc);
+        try {
+            await setDoc(docRef, data, { merge: true });
+        } catch (error) {
+            throw new Error(
+                "Error al editar informacion del usuario: " + error.message
+            );
         }
     };
 
@@ -216,5 +228,6 @@ export const useFirestore = () => {
         fetchUserActivityLogs,
         fetchTotalProblemsCount,
         fetchTotalUsersCount,
+        editDocument,
     };
 };
