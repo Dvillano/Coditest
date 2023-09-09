@@ -6,6 +6,7 @@ import {
     Typography,
     Button,
 } from "@material-tailwind/react";
+import ProblemDetailsModal from "./ProblemDetailsModal";
 
 function ProblemCard({ problem }) {
     return (
@@ -22,7 +23,7 @@ function ProblemCard({ problem }) {
                     <Typography>{problem.descripcion}</Typography>
                 </CardBody>
                 <CardFooter className="pt-0">
-                    <Button>Detalle</Button>
+                    <ProblemDetailsModal problem={problem} />
                 </CardFooter>
             </Card>
         </>
