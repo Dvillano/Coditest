@@ -24,6 +24,16 @@ export const useFirestore = () => {
         }
     };
 
+    const insertProblem = async (problemData) => {
+        const problemasRef = doc(collection(db, "problemas"));
+
+        try {
+            await setDoc(problemasRef, problemData, { merce: true });
+        } catch (error) {
+            throw new Error("Error storing problem info: " + error.message);
+        }
+    };
+
     // Editar documento
     const editDocument = async (collectionName, idDoc, data) => {
         const docRef = doc(db, collectionName, idDoc);
@@ -240,6 +250,7 @@ export const useFirestore = () => {
 
     return {
         insertUser,
+        insertProblem,
         fetchAssignedProblems,
         saveResults,
         updatePassedProblems,

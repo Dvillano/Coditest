@@ -21,8 +21,6 @@ const Registration = () => {
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
-    console.log(authUser);
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -37,7 +35,7 @@ const Registration = () => {
                 nivel,
                 email,
                 rol: "candidato",
-                tienePruebasAsignadas: false,
+                tienePruebasAsignadas: true,
             };
 
             await insertUser(user, userData);

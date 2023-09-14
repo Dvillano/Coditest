@@ -62,6 +62,9 @@ function ProblemManagement() {
                             variant="gradient"
                             size="sm"
                             color="green"
+                            onClick={() =>
+                                handleNavigate("admin/problems/create")
+                            }
                         >
                             <PlusIcon strokeWidth={2} className="h-4 w-4" />{" "}
                             Agregar problema
@@ -69,10 +72,7 @@ function ProblemManagement() {
                     </div>
                     <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-3">
                         {listaProblemas.map((problem) => (
-                            <ProblemCard
-                                key={problem.problema_id}
-                                problem={problem}
-                            />
+                            <ProblemCard key={problem.id} problem={problem} />
                         ))}
                     </div>
                 </>
