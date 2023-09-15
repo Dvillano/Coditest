@@ -17,9 +17,18 @@ import { db } from "./firebaseConfig";
 export const useFirestore = () => {
     const insertUser = async (user, userData) => {
         const userRef = doc(collection(db, "usuarios"), user.uid);
+        const userProgressRef = doc(
+            collection(db, "progresoUsuario"),
+            user.uid
+        );
+
+        let initialUserProgress = {
+            problemasAprobados: [""],
+        };
 
         try {
             await setDoc(userRef, userData, { merge: true });
+            await setDoc(userProgressRef, initialUserProgress, { merge: true }); // Creo progreso al usuario con su uid
         } catch (error) {
             throw new Error("Error storing user info: " + error.message);
         }
