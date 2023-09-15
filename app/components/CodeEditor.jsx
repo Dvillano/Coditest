@@ -49,20 +49,34 @@ function CodeEditor() {
             }
 
             // Evalua el codigo del usuario contra los testsCases
-            const results = currentProblem.codigo_evaluador.map(
-                (testCase) => evalFn(testCase.input) === testCase.outputEsperado
-            );
+            // const results = currentProblem.codigo_evaluador.map(
+            //     (testCase) => evalFn(testCase.input) === testCase.outputEsperado
+            // );
+
+            // Loop through each test case in codigo_evaluador
+            for (const testCase of currentProblem.codigo_evaluador) {
+                // Extract input and expected output from the test case
+                const input = testCase.entrada;
+                const expectedOutput = testCase.salidaEsperada;
+
+                // Evalua el codigo del usuario with the input
+                const result = evalFn(input);
+
+                // Compare the result with the expected output
+                const testPassed = result === expectedOutput;
+
+                // Display the result (you can handle it as needed)
+                console.log("Input:", input);
+                console.log("Result:", result);
+                console.log("Expected Output:", expectedOutput);
+                console.log("Test Passed:", testPassed);
+            }
 
             // Verifica si todos los resultados fueron correctos
             const allTestsPassed = results.every((result) => result);
 
             // Actualiza la UI y guarda resultados
             handleTestResults(allTestsPassed);
-
-            localStorage.setItem(
-                "currentProblemIndex",
-                currentIndex.toString()
-            );
         } catch (error) {
             console.log(error.message);
             toast.error(error.message);

@@ -86,11 +86,14 @@ export const useFirestore = () => {
             // Busca problemas no resueltos del mismo nivel para el usuario
             const userNivel = userSnapshot.data().nivel;
             const passedProblems = await fetchUserProgress(userId);
-            const problemsQuery = query(
+
+            // Buscar los problemas que tengan el mismo nivel que el usuario y no hayan sido resueltos
+            let problemsQuery = query(
                 collection(db, "problemas"),
                 where("nivel", "==", userNivel),
                 where("id", "not-in", passedProblems)
             );
+
             const problemsSnapshot = await getDocs(problemsQuery);
 
             let problems = problemsSnapshot.docs.map((doc) => {
@@ -146,6 +149,7 @@ export const useFirestore = () => {
         }
     };
 
+    // Actualiza en firestore el array que contiene los problemas resueltos para cada usuario
     const updatePassedProblems = async (userId, problemId) => {
         try {
             const userProgressRef = doc(db, "progresoUsuario", userId);
@@ -154,7 +158,12 @@ export const useFirestore = () => {
             if (userProgressSnapshot.exists()) {
                 const problemasAprobados =
                     userProgressSnapshot.data().problemasAprobados;
-                problemasAprobados.push(problemId);
+
+                if (!problemasAprobados.includes(problemId)) {
+                    problemasAprobados.push(problemId);
+                } else {
+                    throw error("El problema ya fue resuelto");
+                }
                 await setDoc(
                     userProgressRef,
                     { problemasAprobados },
