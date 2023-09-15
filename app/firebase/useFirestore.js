@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
     doc,
+    addDoc,
     getDoc,
     setDoc,
     deleteDoc,
@@ -25,10 +26,25 @@ export const useFirestore = () => {
     };
 
     const insertProblem = async (problemData) => {
-        const problemasRef = doc(collection(db, "problemas"));
+        const problemasCollectionRef = collection(db, "problemas");
 
         try {
-            await setDoc(problemasRef, problemData, { merce: true });
+            const problemasRef = await addDoc(
+                problemasCollectionRef,
+                problemData
+            );
+
+            // Get the auto-generated UID
+            const uid = problemasRef.id;
+
+            // Add the UID to the problemData
+            problemData.id = uid;
+
+            // Update the document with the UID field
+            await setDoc(problemasRef, problemData, { merge: true });
+
+            // Return the updated problemData with the UID
+            return { ...problemData, uid };
         } catch (error) {
             throw new Error("Error storing problem info: " + error.message);
         }

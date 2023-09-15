@@ -5,6 +5,7 @@ function ProblemDetailsModal({ problem }) {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(!open);
 
+    console.log(problem);
     return (
         <>
             <Button
@@ -46,13 +47,13 @@ function ProblemDetailsModal({ problem }) {
                         >
                             <Typography>
                                 <span className="font-bold">Input:</span>{" "}
-                                {evaluador.input}
+                                {evaluador.entrada}
                             </Typography>
                             <Typography>
                                 <span className="font-bold">
                                     Output Esperado:
                                 </span>{" "}
-                                {evaluador.outputEsperado}
+                                {evaluador.salidaEsperada}
                             </Typography>
                         </div>
                     ))}
