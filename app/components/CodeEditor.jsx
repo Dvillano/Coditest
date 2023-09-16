@@ -7,6 +7,8 @@ import Loading from "./Loading";
 import { useFirebaseAuth } from "../firebase/useFirebaseAuth";
 import { useFirestore } from "../firebase/useFirestore";
 
+import { Typography } from "@material-tailwind/react";
+
 function CodeEditor() {
     const { authUser, isLoading } = useFirebaseAuth();
     const { fetchAssignedProblems, saveResults, updatePassedProblems } =
@@ -49,28 +51,34 @@ function CodeEditor() {
             }
 
             // Evalua el codigo del usuario contra los testsCases
-            // const results = currentProblem.codigo_evaluador.map(
-            //     (testCase) => evalFn(testCase.input) === testCase.outputEsperado
-            // );
+            const results = currentProblem.codigo_evaluador.map(
+                (testCase) =>
+                    evalFn(testCase.entrada) == testCase.salidaEsperada
+            );
 
-            // Loop through each test case in codigo_evaluador
-            for (const testCase of currentProblem.codigo_evaluador) {
-                // Extract input and expected output from the test case
-                const input = testCase.entrada;
-                const expectedOutput = testCase.salidaEsperada;
+            // // Loop through each test case in codigo_evaluador
+            // for (const testCase of currentProblem.codigo_evaluador) {
+            //     // Extract input and expected output from the test case
+            //     const input = testCase.entrada;
+            //     const expectedOutput = testCase.salidaEsperada;
 
-                // Evalua el codigo del usuario with the input
-                const result = evalFn(input);
+            //     // Evalua el codigo del usuario with the input
 
-                // Compare the result with the expected output
-                const testPassed = result === expectedOutput;
+            //     const result = evalFn(input);
 
-                // Display the result (you can handle it as needed)
-                console.log("Input:", input);
-                console.log("Result:", result);
-                console.log("Expected Output:", expectedOutput);
-                console.log("Test Passed:", testPassed);
-            }
+            //     // Compare the result with the expected output
+            //     const testPassed = result === expectedOutput;
+
+            //     // Prepare the result message
+            //     const resultMessage = `
+            //         Input: ${JSON.stringify(input)}
+            //         Result: ${JSON.stringify(result)}
+            //         Expected Output: ${JSON.stringify(expectedOutput)}
+            //         Test Passed: ${testPassed ? "Yes" : "No"}
+            //     `;
+
+            //     // Push the result message to the array
+            //     resultsArray.push(resultMessage);
 
             // Verifica si todos los resultados fueron correctos
             const allTestsPassed = results.every((result) => result);
@@ -86,8 +94,8 @@ function CodeEditor() {
     const handleTestResults = async (allTestsPassed) => {
         const resultStatus = allTestsPassed ? "paso" : "fallo";
 
-        await saveResults(authUser.uid, currentProblem.id, resultStatus);
-        await updatePassedProblems(authUser.uid, currentProblem.id);
+        // await saveResults(authUser.uid, currentProblem.id, resultStatus);
+        // await updatePassedProblems(authUser.uid, currentProblem.id);
 
         if (allTestsPassed) {
             toast.success("Bien hecho! Todos los tests pasaron");
@@ -117,33 +125,47 @@ function CodeEditor() {
                 <h1>No hay problemas asignados</h1>
             ) : (
                 <div>
-                    <h2>{currentProblem.titulo}</h2>
-                    <p>{currentProblem.descripcion}</p>
-                    <p>{currentProblem.sugerencia}</p>
+                    <div className="m-2">
+                        <Typography
+                            variant="h3"
+                            className="flex justify-center m-2"
+                        >
+                            {currentProblem.titulo}
+                        </Typography>
+
+                        <Typography variant="h6" className="justify-start m-1">
+                            {currentProblem.descripcion}
+                        </Typography>
+
+                        <Typography
+                            color="blue-gray"
+                            className="justify-start m-1 italic"
+                        >
+                            Tip: {currentProblem.sugerencia}
+                        </Typography>
+                    </div>
 
                     <div className="flex">
-                        <div className="border p-4 rounded bg-gray-100 mr-2 flex-1">
+                        <div className="border p-4 rounded bg-gray-100  flex-1">
                             <CodeMirror
                                 value={currentProblem.plantilla_codigo.replaceAll(
                                     "\\n",
                                     "\n"
                                 )}
-                                height="200px"
+                                height="350px"
+                                theme={"dark"}
                                 extensions={[javascript({ jsx: true })]}
                                 onChange={setCode}
                             />
                         </div>
 
-                        <div className="border p-4 rounded bg-gray-100 ml-2 flex-1">
+                        <div className="border p-4 rounded bg-gray-100  ">
                             <button
                                 onClick={executeCode}
                                 className="bg-green-500 text-white px-4 py-2 rounded mb-2"
                             >
                                 Ejecutar
                             </button>
-
-                            <p>Resultado:</p>
-                            <p>{output}</p>
                         </div>
                     </div>
                 </div>
