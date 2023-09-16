@@ -70,6 +70,7 @@ function ProblemCreationForm() {
             ) {
                 await insertProblem(formData);
                 toast.success("Problema guardado correctamente!");
+                handleNavigate("admin/problems");
             } else {
                 toast.error("Complete todos los campos");
             }

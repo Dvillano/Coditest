@@ -7,8 +7,9 @@ import {
     Button,
 } from "@material-tailwind/react";
 import ProblemDetailsModal from "./ProblemDetailsModal";
+import ProblemDeleteModal from "./ProblemDeleteModal";
 
-function ProblemCard({ problem }) {
+function ProblemCard({ problem, isDeleteComplete }) {
     return (
         <>
             <Card className="mt-6 w-100">
@@ -22,8 +23,12 @@ function ProblemCard({ problem }) {
                     </Typography>
                     <Typography>{problem.descripcion}</Typography>
                 </CardBody>
-                <CardFooter className="pt-0">
+                <CardFooter className="pt-0 flex justify-between">
                     <ProblemDetailsModal problem={problem} />
+                    <ProblemDeleteModal
+                        idProblem={problem.id}
+                        isDeleteComplete={isDeleteComplete}
+                    />
                 </CardFooter>
             </Card>
         </>

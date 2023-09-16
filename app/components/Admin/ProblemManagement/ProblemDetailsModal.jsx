@@ -5,7 +5,6 @@ function ProblemDetailsModal({ problem }) {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(!open);
 
-    console.log(problem);
     return (
         <>
             <Button

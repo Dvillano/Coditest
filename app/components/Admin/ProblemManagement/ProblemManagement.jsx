@@ -19,6 +19,7 @@ function ProblemManagement() {
 
     const [user, setUser] = useState(null);
     const [listaProblemas, setListaProblemas] = useState([]);
+    const [isDeleteComplete, setIsDeleteComplete] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -35,6 +36,7 @@ function ProblemManagement() {
                     if (user.rol === "admin") {
                         const problemas = await fetchProblems();
                         setListaProblemas(problemas);
+                        setIsDeleteComplete(false);
                     } else {
                         toast.error("Acceso no autorizado");
                         handleNavigate("/");
@@ -46,7 +48,7 @@ function ProblemManagement() {
         };
 
         fetchData();
-    }, [authUser]);
+    }, [authUser, isDeleteComplete]);
 
     if (isLoading || !authUser) {
         return <Loading />;
@@ -72,7 +74,11 @@ function ProblemManagement() {
                     </div>
                     <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-3">
                         {listaProblemas.map((problem) => (
-                            <ProblemCard key={problem.id} problem={problem} />
+                            <ProblemCard
+                                key={problem.id}
+                                problem={problem}
+                                isDeleteComplete={setIsDeleteComplete}
+                            />
                         ))}
                     </div>
                 </>
