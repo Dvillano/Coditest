@@ -7,7 +7,7 @@ import Loading from "./Loading";
 import { useFirebaseAuth } from "../firebase/useFirebaseAuth";
 import { useFirestore } from "../firebase/useFirestore";
 
-import { Typography } from "@material-tailwind/react";
+import { Typography, Progress } from "@material-tailwind/react";
 
 function CodeEditor() {
     const { authUser, isLoading } = useFirebaseAuth();
@@ -20,6 +20,9 @@ function CodeEditor() {
     const [code, setCode] = useState("");
     const [results, setResults] = useState([]);
     const [output, setOutput] = useState("");
+
+    // Calculate the progress as a percentage
+    const progress = (currentIndex / problemList.length) * 100;
 
     useEffect(() => {
         const fetchProblems = async () => {
@@ -144,6 +147,14 @@ function CodeEditor() {
                             Tip: {currentProblem.sugerencia}
                         </Typography>
                     </div>
+                    {/* Progress Bar */}
+                    <div className="mb-4">
+                        <Progress value={progress} color="green" />
+                        <div className="text-center mt-2">
+                            {currentIndex} de {problemList.length} problemas
+                            completados
+                        </div>
+                    </div>
 
                     <div className="flex">
                         <div className="border p-4 rounded bg-gray-100  flex-1">
@@ -159,7 +170,7 @@ function CodeEditor() {
                             />
                         </div>
 
-                        <div className="border p-4 rounded bg-gray-100  ">
+                        <div className="border p-4 rounded bg-gray-100 flex-1  ">
                             <button
                                 onClick={executeCode}
                                 className="bg-green-500 text-white px-4 py-2 rounded mb-2"
