@@ -7,7 +7,14 @@ import Loading from "./Loading";
 import { useFirebaseAuth } from "../firebase/useFirebaseAuth";
 import { useFirestore } from "../firebase/useFirestore";
 
-import { Typography, Progress } from "@material-tailwind/react";
+import {
+    Typography,
+    Progress,
+    Popover,
+    PopoverHandler,
+    PopoverContent,
+    Button,
+} from "@material-tailwind/react";
 
 function CodeEditor() {
     const { authUser, isLoading } = useFirebaseAuth();
@@ -140,12 +147,19 @@ function CodeEditor() {
                             {currentProblem.descripcion}
                         </Typography>
 
-                        <Typography
-                            color="blue-gray"
-                            className="justify-start m-1 italic"
+                        <Popover
+                            animate={{
+                                mount: { scale: 1, y: 0 },
+                                unmount: { scale: 0, y: 25 },
+                            }}
                         >
-                            Tip: {currentProblem.sugerencia}
-                        </Typography>
+                            <PopoverHandler>
+                                <Button>Mostrar ayuda</Button>
+                            </PopoverHandler>
+                            <PopoverContent>
+                                {currentProblem.sugerencia}
+                            </PopoverContent>
+                        </Popover>
                     </div>
                     {/* Progress Bar */}
                     <div className="mb-4">
