@@ -2,13 +2,11 @@
 import React from "react";
 import { Button } from "@material-tailwind/react";
 import { ArrowPathIcon } from "@heroicons/react/24/solid";
-import { useRouter } from "next/navigation";
+import { useNavigation } from "@/app/utils/useNavigation";
 
 function NoAssignedProblemsComponent() {
-    const router = useRouter();
-    const handleRefresh = () => {
-        router.refresh();
-    };
+    const { handleNavigate } = useNavigation();
+
     return (
         <div className="flex flex-col items-center justify-center h-screen">
             <div className="max-w-md p-4 mx-auto bg-white rounded-lg shadow-lg">
@@ -25,7 +23,7 @@ function NoAssignedProblemsComponent() {
                         className="flex"
                         color="green"
                         size="md"
-                        onClick={handleRefresh}
+                        onClick={() => handleNavigate("/")}
                     >
                         <ArrowPathIcon className="h-4 w-4 mr-2" />
                         Actualizar
