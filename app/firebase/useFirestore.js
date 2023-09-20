@@ -24,7 +24,7 @@ export const useFirestore = () => {
         );
 
         let initialUserProgress = {
-            problemasAprobados: [""],
+            problemasAsignados: [],
         };
 
         try {
@@ -93,16 +93,6 @@ export const useFirestore = () => {
                 return problemsData;
             }
         } catch (error) {}
-    };
-
-    const updateAssignedProblems = async (userId) => {
-        try {
-            const userRef = doc(db, "usuarios", userId);
-            console.log(userId, userRef);
-            await updateDoc(userRef, { tienePruebasAsignadas: false });
-        } catch (error) {
-            console.log(error);
-        }
     };
 
     const fetchAssignedProblems = async (userId) => {
@@ -209,18 +199,18 @@ export const useFirestore = () => {
                 const problemasAsignados =
                     userProgressSnapshot.data().problemasAsignados;
 
-                // Find the problem with the given ID in the assignedProblems array
+                // Busca el problema con su ID
                 const problemIndex = problemasAsignados.findIndex(
                     (problem) => problem.problemId === problemId
                 );
 
                 if (problemIndex !== -1) {
-                    // Mark the problem as completed in the problemasAsignados array
+                    // Marca el problema como completado y el timestamp de completado
                     problemasAsignados[problemIndex].status = "completado";
                     problemasAsignados[problemIndex].completionTimestamp =
                         new Date().toLocaleString();
 
-                    // Update the user progress document with the correct field name
+                    // Actualiza el documento de progresoUsuario
                     await setDoc(
                         userProgressRef,
                         { problemasAsignados },
@@ -321,7 +311,6 @@ export const useFirestore = () => {
         fetchAssignedProblems,
         saveResults,
         updatePassedProblems,
-        updateAssignedProblems,
         fetchUser,
         fetchUsers,
         fetchUserActivityLogs,
