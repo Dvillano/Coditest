@@ -4,7 +4,7 @@ import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import toast from "react-hot-toast";
 import NoAssignedProblemsComponent from "./NoAssignedProblemsComponent";
-import Loading from "../Loading";
+import Loading from "./Loading";
 import { useFirebaseAuth } from "../../firebase/useFirebaseAuth";
 import { useFirestore } from "../../firebase/useFirestore";
 

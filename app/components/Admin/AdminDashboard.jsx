@@ -6,7 +6,7 @@ import { useFirestore } from "../../firebase/useFirestore";
 import { useNavigation } from "@/app/utils/useNavigation";
 import { useUserStatus } from "@/app/firebase/useUserStatus";
 
-import Loading from "../Loading";
+import Loading from "../UserInterface/Loading";
 import LogTable from "./TableLogs/LogTable";
 
 import { Card, CardBody } from "@material-tailwind/react";

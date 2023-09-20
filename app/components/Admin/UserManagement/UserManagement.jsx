@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useFirestore } from "../../../firebase/useFirestore";
 import { useFirebaseAuth } from "../../../firebase/useFirebaseAuth";
 import { useNavigation } from "@/app/utils/useNavigation";
-import Loading from "../../Loading";
+import Loading from "../../UserInterface/Loading";
 import toast from "react-hot-toast";
 import UserEditModal from "./UserEditModal";
 import UserDeleteModal from "./UserDeleteModal";

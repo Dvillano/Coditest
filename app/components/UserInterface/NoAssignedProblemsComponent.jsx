@@ -12,7 +12,7 @@ function NoAssignedProblemsComponent() {
     return (
         <div className="flex flex-col items-center justify-center h-screen">
             <div className="max-w-md p-4 mx-auto bg-white rounded-lg shadow-lg">
-                <img className="object-contain h-48 w-96" src="./xmark.jpg" />
+                <img className="object-contain h-48 w-96" src="./xmark.jp" />
                 <h2 className="text-2xl font-semibold text-center text-gray-800">
                     No tienes pruebas asignadas en este momento
                 </h2>

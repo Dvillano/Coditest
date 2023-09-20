@@ -5,7 +5,7 @@ import { useFirebaseAuth } from "../../../firebase/useFirebaseAuth";
 import { useFirestore } from "../../../firebase/useFirestore";
 import { useNavigation } from "@/app/utils/useNavigation";
 
-import Loading from "../../Loading";
+import Loading from "../../UserInterface/Loading";
 import ProblemCard from "./ProblemCard";
 import toast from "react-hot-toast";
 

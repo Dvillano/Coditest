@@ -5,7 +5,7 @@ import { useNavigation } from "../../utils/useNavigation";
 import { useFirebaseAuth } from "../../firebase/useFirebaseAuth";
 import { useFirestore } from "../../firebase/useFirestore";
 
-import Loading from "../Loading";
+import Loading from "../UserInterface/Loading";
 
 import { Button } from "@material-tailwind/react";
 

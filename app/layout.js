@@ -1,6 +1,6 @@
 import "./globals.css";
 import { AuthUserProvider } from "./firebase/useFirebaseAuth";
-import Navbar from "./components/Navbar";
+import Navbar from "./components/UserInterface/Navbar";
 import { Toaster } from "react-hot-toast";
 
 export const metadata = {

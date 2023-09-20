@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { useNavigation } from "@/app/utils/useNavigation";
 import { Button } from "@material-tailwind/react";
 
-import Loading from "../../Loading";
+import Loading from "../../UserInterface/Loading";
 
 import { useFirebaseAuth } from "../../../firebase/useFirebaseAuth";
 import { useFirestore } from "@/app/firebase/useFirestore";

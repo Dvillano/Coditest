@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useFirebaseAuth } from "../firebase/useFirebaseAuth";
-import { useFirestore } from "../firebase/useFirestore";
+import { useFirebaseAuth } from "../../firebase/useFirebaseAuth";
+import { useFirestore } from "../../firebase/useFirestore";
 
 import { Button } from "@material-tailwind/react";
+import { CodeBracketSquareIcon } from "@heroicons/react/24/solid";
 
-import { useNavigation } from "../utils/useNavigation";
+import { useNavigation } from "../../utils/useNavigation";
 
 const Navbar = () => {
     const { handleNavigate } = useNavigation();
@@ -49,9 +50,10 @@ const Navbar = () => {
             <h1 className="text-2xl font-semibold text-white">
                 <a
                     onClick={() => handleNavigate("/")}
-                    className="text-white cursor-pointer"
+                    className="text-white cursor-pointer flex"
                 >
-                    Coditest
+                    CodiTest
+                    <CodeBracketSquareIcon className="h-8 w-8" />
                 </a>
             </h1>
             {authUser && (
