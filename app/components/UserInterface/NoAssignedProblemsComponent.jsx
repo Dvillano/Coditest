@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Button } from "@material-tailwind/react";
-import { ArrowPathIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { ArrowPathIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/navigation";
 
 function NoAssignedProblemsComponent() {
@@ -12,10 +12,7 @@ function NoAssignedProblemsComponent() {
     return (
         <div className="flex flex-col items-center justify-center h-screen">
             <div className="max-w-md p-4 mx-auto bg-white rounded-lg shadow-lg">
-                <img
-                    className="object-contain h-48 w-96"
-                    src="https://media.istockphoto.com/id/1178429224/vector/red-cross-on-white-background-isolated-vector-illustration-circle-shape-no-button-negative.jpg?s=612x612&w=0&k=20&c=DOtEZDSLR7wze3xYin-oBjJPSSmLm7JvnvQhS1T7-U8="
-                />
+                <img className="object-contain h-48 w-96" src="./xmark.jpg" />
                 <h2 className="text-2xl font-semibold text-center text-gray-800">
                     No tienes pruebas asignadas en este momento
                 </h2>
