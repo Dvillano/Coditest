@@ -5,6 +5,7 @@ import {
     getDoc,
     setDoc,
     deleteDoc,
+    updateDoc,
     query,
     where,
     collection,
@@ -94,43 +95,67 @@ export const useFirestore = () => {
         } catch (error) {}
     };
 
+    const updateAssignedProblems = async (userId) => {
+        try {
+            const userRef = doc(db, "usuarios", userId);
+            console.log(userId, userRef);
+            await updateDoc(userRef, { tienePruebasAsignadas: false });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const fetchAssignedProblems = async (userId) => {
         try {
-            //Check if the user has assigned problem
-            const userRef = doc(db, "usuarios", userId);
-            const userSnapshot = await getDoc(userRef);
+            // Buscar al usuario por ID
+            const user = await fetchUser(userId);
+            const userLevel = user.nivel;
 
+            // Busca progreso de problemas del usuario
+            const userProgressRef = doc(db, "progresoUsuario", userId);
+            const userProgressSnapshot = await getDoc(userProgressRef);
+
+            // Revisa si el usuario tiene problemas asignados
             if (
-                !userSnapshot.exists() ||
-                !userSnapshot.data().tienePruebasAsignadas
+                !userProgressSnapshot.exists() ||
+                !userProgressSnapshot.data().problemasAsignados
             ) {
-                console.log("User does not have assigned problems");
+                console.log("El usuario no tiene problemas asignados");
                 return [];
             }
 
-            // Busca problemas no resueltos del mismo nivel para el usuario
-            const userNivel = userSnapshot.data().nivel;
-            const passedProblems = await fetchUserProgress(userId);
+            const assignedProblems =
+                userProgressSnapshot.data().problemasAsignados;
 
-            // Buscar los problemas que tengan el mismo nivel que el usuario y no hayan sido resueltos
-            let problemsQuery = query(
-                collection(db, "problemas"),
-                where("nivel", "==", userNivel),
-                where("id", "not-in", passedProblems)
+            // Filtra por status: asignado
+            let filteredProblems = assignedProblems.filter(
+                (problem) => problem.status === "asignado"
             );
 
-            const problemsSnapshot = await getDocs(problemsQuery);
+            // Randomizar orden de problemas y limitar a 3
+            filteredProblems.sort(() => Math.random() - 0.5);
+            filteredProblems = filteredProblems.slice(0, 3);
+            const problems = [];
 
-            let problems = problemsSnapshot.docs.map((doc) => {
-                return { id: doc.id, ...doc.data() };
-            });
+            // Buscar detalles de problemas
+            for (const problem of filteredProblems) {
+                const problemId = problem.problemId;
 
-            // Trae solos 3 problemas ordenados al azar.
-            problems.sort(() => {
-                return Math.random() - 0.5;
-            });
+                // Busca el documento del problema por ID
+                const problemRef = doc(db, "problemas", problemId);
+                const problemSnapshot = await getDoc(problemRef);
 
-            problems = problems.slice(0, 3);
+                if (problemSnapshot.exists()) {
+                    const problemData = problemSnapshot.data();
+                    // Revisa si el problema corresponde al mismo nivel del usuario
+                    if (problemData.nivel == userLevel) {
+                        problems.push({
+                            id: problemSnapshot.id,
+                            ...problemData,
+                        });
+                    }
+                }
+            }
 
             return problems;
         } catch (error) {
@@ -214,7 +239,7 @@ export const useFirestore = () => {
                 return userData;
             }
         } catch (error) {
-            console.error("Error fetching user role:", error);
+            console.error("Error fetching user:", error);
         }
     };
 
@@ -288,6 +313,7 @@ export const useFirestore = () => {
         fetchAssignedProblems,
         saveResults,
         updatePassedProblems,
+        updateAssignedProblems,
         fetchUser,
         fetchUsers,
         fetchUserActivityLogs,

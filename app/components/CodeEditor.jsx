@@ -4,6 +4,7 @@ import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import toast from "react-hot-toast";
 import Loading from "./Loading";
+import UserStatusInfo from "./UserStatusInfo";
 import { useFirebaseAuth } from "../firebase/useFirebaseAuth";
 import { useFirestore } from "../firebase/useFirestore";
 
@@ -18,15 +19,18 @@ import {
 
 function CodeEditor() {
     const { authUser, isLoading } = useFirebaseAuth();
-    const { fetchAssignedProblems, saveResults, updatePassedProblems } =
-        useFirestore();
+    const {
+        fetchAssignedProblems,
+        saveResults,
+        updatePassedProblems,
+        updateAssignedProblems,
+    } = useFirestore();
 
     const [problemList, setProblemList] = useState([]);
     const [currentProblem, setCurrentProblem] = useState(null);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [code, setCode] = useState("");
-    const [results, setResults] = useState([]);
-    const [output, setOutput] = useState("");
+    const [allProblemsPassed, setAllProblemsPassed] = useState(null);
 
     // Calculate the progress as a percentage
     const progress = (currentIndex / problemList.length) * 100;
@@ -104,12 +108,14 @@ function CodeEditor() {
     const handleTestResults = async (allTestsPassed) => {
         const resultStatus = allTestsPassed ? "paso" : "fallo";
 
-        // await saveResults(authUser.uid, currentProblem.id, resultStatus);
-        // await updatePassedProblems(authUser.uid, currentProblem.id);
+        await saveResults(authUser.uid, currentProblem.id, resultStatus);
+        await updatePassedProblems(authUser.uid, currentProblem.id);
 
         if (allTestsPassed) {
             toast.success("Bien hecho! Todos los tests pasaron");
             handleNextProblem();
+
+            //Redirigir a otra pagina en caso de haber pasado todas las preubas
         } else {
             toast.error("Oops! Algunos tests fallaron");
         }
@@ -132,7 +138,7 @@ function CodeEditor() {
     return (
         <div>
             {problemList.length == 0 ? (
-                <h1>No hay problemas asignados</h1>
+                <UserStatusInfo></UserStatusInfo>
             ) : (
                 <div>
                     <div className="m-2">
@@ -148,6 +154,7 @@ function CodeEditor() {
                         </Typography>
 
                         <Popover
+                            className="m-2"
                             animate={{
                                 mount: { scale: 1, y: 0 },
                                 unmount: { scale: 0, y: 25 },
