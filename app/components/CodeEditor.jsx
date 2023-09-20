@@ -161,7 +161,7 @@ function CodeEditor() {
                             }}
                         >
                             <PopoverHandler>
-                                <Button>Mostrar ayuda</Button>
+                                <Button>Ayuda</Button>
                             </PopoverHandler>
                             <PopoverContent>
                                 {currentProblem.sugerencia}

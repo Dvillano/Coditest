@@ -206,22 +206,30 @@ export const useFirestore = () => {
             const userProgressSnapshot = await getDoc(userProgressRef);
 
             if (userProgressSnapshot.exists()) {
-                const problemasAprobados =
-                    userProgressSnapshot.data().problemasAprobados;
+                const problemasAsignados =
+                    userProgressSnapshot.data().problemasAsignados;
 
-                if (!problemasAprobados.includes(problemId)) {
-                    problemasAprobados.push(problemId);
-                } else {
-                    throw error("El problema ya fue resuelto");
-                }
-                await setDoc(
-                    userProgressRef,
-                    { problemasAprobados },
-                    { merge: true }
+                // Find the problem with the given ID in the assignedProblems array
+                const problemIndex = problemasAsignados.findIndex(
+                    (problem) => problem.problemId === problemId
                 );
+
+                if (problemIndex !== -1) {
+                    // Mark the problem as completed in the problemasAsignados array
+                    problemasAsignados[problemIndex].status = "completado";
+                    problemasAsignados[problemIndex].completionTimestamp =
+                        new Date().toLocaleString();
+
+                    // Update the user progress document with the correct field name
+                    await setDoc(
+                        userProgressRef,
+                        { problemasAsignados },
+                        { merge: true }
+                    );
+                }
             } else {
                 await setDoc(userProgressRef, {
-                    problemasAprobados: [problemId],
+                    problemasAsignados: [{ problemId, status: "completado" }],
                 });
             }
         } catch (error) {
