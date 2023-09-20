@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import toast from "react-hot-toast";
-import Loading from "./Loading";
-import UserStatusInfo from "./UserStatusInfo";
-import { useFirebaseAuth } from "../firebase/useFirebaseAuth";
-import { useFirestore } from "../firebase/useFirestore";
+import NoAssignedProblemsComponent from "./NoAssignedProblemsComponent";
+import Loading from "../Loading";
+import { useFirebaseAuth } from "../../firebase/useFirebaseAuth";
+import { useFirestore } from "../../firebase/useFirestore";
 
 import {
     Typography,
@@ -19,12 +19,8 @@ import {
 
 function CodeEditor() {
     const { authUser, isLoading } = useFirebaseAuth();
-    const {
-        fetchAssignedProblems,
-        saveResults,
-        updatePassedProblems,
-        updateAssignedProblems,
-    } = useFirestore();
+    const { fetchAssignedProblems, saveResults, updatePassedProblems } =
+        useFirestore();
 
     const [problemList, setProblemList] = useState([]);
     const [currentProblem, setCurrentProblem] = useState(null);
@@ -32,7 +28,7 @@ function CodeEditor() {
     const [code, setCode] = useState("");
     const [allProblemsPassed, setAllProblemsPassed] = useState(null);
 
-    // Calculate the progress as a percentage
+    // Calcula el progreso como porcentaje
     const progress = (currentIndex / problemList.length) * 100;
 
     useEffect(() => {
@@ -69,30 +65,6 @@ function CodeEditor() {
                 (testCase) =>
                     evalFn(testCase.entrada) == testCase.salidaEsperada
             );
-
-            // // Loop through each test case in codigo_evaluador
-            // for (const testCase of currentProblem.codigo_evaluador) {
-            //     // Extract input and expected output from the test case
-            //     const input = testCase.entrada;
-            //     const expectedOutput = testCase.salidaEsperada;
-
-            //     // Evalua el codigo del usuario with the input
-
-            //     const result = evalFn(input);
-
-            //     // Compare the result with the expected output
-            //     const testPassed = result === expectedOutput;
-
-            //     // Prepare the result message
-            //     const resultMessage = `
-            //         Input: ${JSON.stringify(input)}
-            //         Result: ${JSON.stringify(result)}
-            //         Expected Output: ${JSON.stringify(expectedOutput)}
-            //         Test Passed: ${testPassed ? "Yes" : "No"}
-            //     `;
-
-            //     // Push the result message to the array
-            //     resultsArray.push(resultMessage);
 
             // Verifica si todos los resultados fueron correctos
             const allTestsPassed = results.every((result) => result);
@@ -135,10 +107,13 @@ function CodeEditor() {
         return <Loading />;
     }
 
+    // Revisa si usuario no tiene problemas asignados
+    const noAssignedProblems = problemList.length === 0;
+
     return (
         <div>
-            {problemList.length == 0 ? (
-                <UserStatusInfo></UserStatusInfo>
+            {noAssignedProblems ? (
+                <NoAssignedProblemsComponent></NoAssignedProblemsComponent>
             ) : (
                 <div>
                     <div className="m-2">
