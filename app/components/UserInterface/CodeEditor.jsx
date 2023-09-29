@@ -7,6 +7,7 @@ import NoAssignedProblemsComponent from "./NoAssignedProblemsComponent";
 import Loading from "./Loading";
 import { useFirebaseAuth } from "../../firebase/useFirebaseAuth";
 import { useFirestore } from "../../firebase/useFirestore";
+import { useNavigation } from "@/app/utils/useNavigation";
 
 import {
     Typography,
@@ -21,12 +22,12 @@ function CodeEditor() {
     const { authUser, isLoading } = useFirebaseAuth();
     const { fetchAssignedProblems, saveResults, updatePassedProblems } =
         useFirestore();
+    const { handleNavigate } = useNavigation();
 
     const [problemList, setProblemList] = useState([]);
     const [currentProblem, setCurrentProblem] = useState(null);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [code, setCode] = useState("");
-    const [allProblemsPassed, setAllProblemsPassed] = useState(null);
 
     // Calcula el progreso como porcentaje
     const progress = (currentIndex / problemList.length) * 100;
@@ -81,7 +82,11 @@ function CodeEditor() {
         const resultStatus = allTestsPassed ? "paso" : "fallo";
 
         await saveResults(authUser.uid, currentProblem.id, resultStatus);
-        await updatePassedProblems(authUser.uid, currentProblem.id);
+
+        // Solo actualizar problemas completados cuando pasan todas las pruebas
+        if (resultStatus == "paso") {
+            await updatePassedProblems(authUser.uid, currentProblem.id);
+        }
 
         if (allTestsPassed) {
             toast.success("Bien hecho! Todos los tests pasaron");
@@ -100,6 +105,13 @@ function CodeEditor() {
             setCurrentProblem(problemList[currentIndex + 1]);
         } else {
             setProblemList([]);
+            debugger;
+            const allExercisesCompleted =
+                currentIndex === problemList.length - 1;
+            if (allExercisesCompleted) {
+                // Redirect to the congratulations message component
+                handleNavigate("congratulations");
+            }
         }
     };
 

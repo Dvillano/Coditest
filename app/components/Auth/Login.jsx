@@ -48,6 +48,8 @@ const Login = () => {
                 handleNavigate("admin");
             } else if (user.rol === "candidato") {
                 handleNavigate("prueba");
+            } else if (user.rol === "entrevistador") {
+                handleNavigate("entrevistador");
             }
         }
     }, [isLoading, user]);

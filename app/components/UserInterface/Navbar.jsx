@@ -16,6 +16,7 @@ const Navbar = () => {
 
     const [user, setUser] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [isEntrevistador, setIsEntrevistador] = useState(false);
 
     useEffect(() => {
         const fetchUserFromFirestore = async () => {
@@ -36,6 +37,7 @@ const Navbar = () => {
         if (user) {
             const userRole = user.rol;
             setIsAdmin(userRole === "admin");
+            setIsEntrevistador(userRole === "entrevistador");
         }
     }, [user]);
 
@@ -72,6 +74,26 @@ const Navbar = () => {
                                 className="text-white cursor-pointer"
                             >
                                 Problemas
+                            </a>
+                        </>
+                    )}
+                    {isEntrevistador && (
+                        <>
+                            <a
+                                onClick={() =>
+                                    handleNavigate("entrevistador/candidatos")
+                                }
+                                className="text-white cursor-pointer"
+                            >
+                                Candidatos
+                            </a>
+                            <a
+                                onClick={() =>
+                                    handleNavigate("entrevistador/reportes")
+                                }
+                                className="text-white cursor-pointer"
+                            >
+                                Reportes
                             </a>
                         </>
                     )}
