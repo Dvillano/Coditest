@@ -16,15 +16,23 @@ import {
 } from "@material-tailwind/react";
 
 function CandidatoManagement() {
-    const TABLE_HEAD = ["ID", "Nombre", "Apellido", "Email", "Nivel"];
+    const TABLE_HEAD = [
+        "ID",
+        "Nombre",
+        "Apellido",
+        "Email",
+        "Nivel",
+        "Problemas Asignados",
+        "",
+    ];
 
     const { authUser, isLoading } = useFirebaseAuth();
     const { handleNavigate } = useNavigation();
 
-    const { fetchUser, fetchUsers } = useFirestore();
+    const { fetchUser, fetchUsers, fetchUserProgress } = useFirestore();
 
     const [user, setUser] = useState(null);
-    const [listaUsuarios, setListaUsuarios] = useState([]);
+    const [listaCandidatos, setListaCandidatos] = useState([]);
     const [selectedUserId, setSelectedUserId] = useState(null);
 
     useEffect(() => {
@@ -40,9 +48,17 @@ function CandidatoManagement() {
                         const usuarios = await fetchUsers();
 
                         // Guarda solo usuarios con el rol de candidatos
-                        setListaUsuarios(
+                        setListaCandidatos(
                             usuarios.filter((el) => el.rol === "candidato")
                         );
+
+                        listaCandidatos.forEach(async (candidato) => {
+                            const userProgress = await fetchUserProgress(
+                                candidato.id
+                            );
+
+                            console.log(userProgress);
+                        });
                     } else {
                         toast.error("Acceso no autorizado");
                         handleNavigate("/");
@@ -65,7 +81,7 @@ function CandidatoManagement() {
     }
     return (
         <>
-            {listaUsuarios !== null && (
+            {listaCandidatos !== null && (
                 <>
                     <Card className="h-full w-full">
                         <CardHeader
@@ -109,7 +125,7 @@ function CandidatoManagement() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {listaUsuarios.map(
+                                    {listaCandidatos.map(
                                         (
                                             {
                                                 id,
@@ -122,7 +138,7 @@ function CandidatoManagement() {
                                         ) => {
                                             const isLast =
                                                 index ===
-                                                listaUsuarios.length - 1;
+                                                listaCandidatos.length - 1;
                                             const classes = isLast
                                                 ? "p-4"
                                                 : "p-4 border-b border-blue-gray-50";

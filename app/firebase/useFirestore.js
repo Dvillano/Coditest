@@ -181,7 +181,7 @@ export const useFirestore = () => {
             const userProgressRef = doc(db, "progresoUsuario", userId);
             const userProgressSnapshot = await getDoc(userProgressRef);
             return userProgressSnapshot.exists()
-                ? userProgressSnapshot.data().problemasAprobados
+                ? userProgressSnapshot.data().problemasAsignados
                 : [];
         } catch (error) {
             console.error("Error fetching user progress:", error);
@@ -312,6 +312,7 @@ export const useFirestore = () => {
         saveResults,
         updatePassedProblems,
         fetchUser,
+        fetchUserProgress,
         fetchUsers,
         fetchUserActivityLogs,
         fetchTotalProblemsCount,
