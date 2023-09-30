@@ -153,6 +153,40 @@ export const useFirestore = () => {
         }
     };
 
+    const fetchUnassignedProblems = async (userId) => {
+        try {
+            // Buscar al usuario por ID
+            const user = await fetchUser(userId);
+            const userLevel = user.nivel;
+
+            // Busca progreso de problemas del usuario
+            const userProgressRef = doc(db, "progresoUsuario", userId);
+            const userProgressSnapshot = await getDoc(userProgressRef);
+
+            // Lista de problemas asignados al usuarios (Esten o no completos)
+            const assignedProblems =
+                userProgressSnapshot.data()?.problemasAsignados;
+
+            // Lista de todos los problemas
+            const problemsList = await fetchProblems();
+
+            // Filtrar los problemas no asignados y del mismo nivel
+            const unassignedProblems = problemsList.filter((problem) => {
+                return (
+                    !assignedProblems.some(
+                        (assignedProblem) =>
+                            assignedProblem.problemId === problem.id
+                    ) && problem.nivel === userLevel
+                );
+            });
+
+            return unassignedProblems;
+        } catch (error) {
+            console.error("Error fetching non-assigned problems:", error);
+            return [];
+        }
+    };
+
     const saveResults = async (userId, problemId, status) => {
         const resultData = {
             usuario_id: userId,
@@ -308,6 +342,7 @@ export const useFirestore = () => {
         insertUser,
         insertProblem,
         fetchAssignedProblems,
+        fetchUnassignedProblems,
         saveResults,
         updatePassedProblems,
         fetchUser,

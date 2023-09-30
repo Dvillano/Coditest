@@ -17,33 +17,28 @@ import {
 
 import toast from "react-hot-toast";
 
-function ProblemAssignModal(selectedRow, isAssignComplete) {
-    const { fetchUser, fetchUserProgress } = useFirestore();
+function ProblemAssignModal({ selectedRow, isAssignComplete }) {
+    const { fetchUnassignedProblems } = useFirestore();
 
-    const idUser = selectedRow.idUser;
+    const [listaProblemasSinAsignar, setListaProblemasSinAsignar] = useState(
+        []
+    );
+
+    const userId = selectedRow;
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(!open);
 
     // Buscar los problemas que no esten asignados al usuario.
-
-    const fetchUnassignedProblems = async () => {
-        try {
-            // Buscar al usuario por ID
-            const user = await fetchUser(idUser);
-            const userLevel = user.nivel;
-
-            //TODO traer problemas no asignados al usuario segunsu nivel
-        } catch (error) {
-            console.error("Error fetching non-assigned problems:", error);
-            return [];
-        }
+    const handleFetch = async (userId) => {
+        let lista = await fetchUnassignedProblems(userId);
+        setListaProblemasSinAsignar(lista);
     };
 
     return (
         <>
             <Button
                 onClick={handleOpen}
-                onClickCapture={fetchUnassignedProblems}
+                onClickCapture={() => handleFetch(userId)}
                 color="blue"
             >
                 Asignar
@@ -58,18 +53,32 @@ function ProblemAssignModal(selectedRow, isAssignComplete) {
                 <div className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden">
                     <div className="w-full p-6 bg-white rounded-md shadow-md lg:max-w-xl">
                         <Typography
-                            variant="h5"
+                            variant="h2"
                             color="blue-gray"
-                            className="text-center"
+                            className="text-center mb-5"
                         >
                             Asignar Problemas
                         </Typography>
                         <Card className="w-full">
-                            <List>
-                                <ListItem>Inbox</ListItem>
-                                <ListItem>Trash</ListItem>
-                                <ListItem>Settings</ListItem>
-                            </List>
+                            {listaProblemasSinAsignar.length > 0 ? (
+                                <List>
+                                    {listaProblemasSinAsignar.map(
+                                        (problema) => (
+                                            <ListItem key={problema.id}>
+                                                {problema.titulo}
+                                            </ListItem>
+                                        )
+                                    )}
+                                </List>
+                            ) : (
+                                <Typography
+                                    variant="body"
+                                    color="red"
+                                    className="text-center mt-5"
+                                >
+                                    No tiene problemas disponibles para asignar.
+                                </Typography>
+                            )}
                         </Card>
                     </div>
                 </div>

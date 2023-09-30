@@ -234,7 +234,7 @@ function CandidatoManagement() {
                                                                             }
                                                                             variant="small"
                                                                             color="blue"
-                                                                            className="font-bold"
+                                                                            className="font-normal"
                                                                         >
                                                                             {
                                                                                 problem.titulo
@@ -246,7 +246,7 @@ function CandidatoManagement() {
                                                                 <Typography
                                                                     variant="small"
                                                                     color="red"
-                                                                    className="font-bold"
+                                                                    className="font-normal"
                                                                 >
                                                                     El candidato
                                                                     no tiene
