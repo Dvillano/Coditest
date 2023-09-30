@@ -17,10 +17,10 @@ import {
 
 import toast from "react-hot-toast";
 
-function ProblemAssignModal(idUser, isAssignComplete) {
+function ProblemAssignModal(selectedRow, isAssignComplete) {
     const { fetchUser, fetchUserProgress } = useFirestore();
 
-    const userId = idUser.idUser;
+    const idUser = selectedRow.idUser;
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(!open);
 
@@ -29,7 +29,7 @@ function ProblemAssignModal(idUser, isAssignComplete) {
     const fetchUnassignedProblems = async () => {
         try {
             // Buscar al usuario por ID
-            const user = await fetchUser(userId);
+            const user = await fetchUser(idUser);
             const userLevel = user.nivel;
 
             //TODO traer problemas no asignados al usuario segunsu nivel

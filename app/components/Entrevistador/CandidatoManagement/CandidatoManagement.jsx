@@ -37,6 +37,7 @@ function CandidatoManagement() {
     const [user, setUser] = useState(null);
     const [listaCandidatos, setListaCandidatos] = useState([]);
     const [selectedUserId, setSelectedUserId] = useState(null);
+
     const [isAssignComplete, setIsAssignComplete] = useState(false);
 
     useEffect(() => {
@@ -81,10 +82,6 @@ function CandidatoManagement() {
 
         fetchData();
     }, [authUser]);
-
-    const handleRowClick = (userId) => {
-        setSelectedUserId(userId);
-    };
 
     if (isLoading || !authUser) {
         return <Loading />;
@@ -158,9 +155,9 @@ function CandidatoManagement() {
                                             return (
                                                 <tr
                                                     key={id}
-                                                    onClick={() =>
-                                                        handleRowClick(id)
-                                                    }
+                                                    onClick={() => {
+                                                        console.log(id);
+                                                    }}
                                                 >
                                                     <td className={classes}>
                                                         <div className="flex items-center gap-3">
@@ -263,10 +260,8 @@ function CandidatoManagement() {
                                                         {/* Botones de Asignar y Remover Problemas */}
                                                         <div className="flex items-center space-x-2">
                                                             <ProblemAssignModal
-                                                                idUser={
-                                                                    selectedUserId
-                                                                }
-                                                                isEditComplete={
+                                                                selectedRow={id}
+                                                                isAssignComplete={
                                                                     setIsAssignComplete
                                                                 }
                                                             />
