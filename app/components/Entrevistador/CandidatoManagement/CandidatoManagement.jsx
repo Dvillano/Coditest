@@ -13,6 +13,7 @@ import {
     CardHeader,
     Typography,
     CardBody,
+    Button,
 } from "@material-tailwind/react";
 
 function CandidatoManagement() {
@@ -112,13 +113,13 @@ function CandidatoManagement() {
                             </div>
                         </CardHeader>
                         <CardBody className="px-0">
-                            <table className="mt-4 w-full min-w-max table-auto text-left">
+                            <table className="w-full min-w-max table-auto text-left">
                                 <thead>
                                     <tr>
                                         {TABLE_HEAD.map((head) => (
                                             <th
                                                 key={head}
-                                                className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4"
+                                                className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4 text-center"
                                             >
                                                 <Typography
                                                     variant="small"
@@ -254,6 +255,31 @@ function CandidatoManagement() {
                                                                     asignados
                                                                 </Typography>
                                                             )}
+                                                        </div>
+                                                    </td>
+                                                    <td className={classes}>
+                                                        {/* Botones de Asignar y Remover Problemas */}
+                                                        <div className="flex items-center space-x-2">
+                                                            <Button
+                                                                onClick={() =>
+                                                                    handleAsignarProblemas(
+                                                                        id
+                                                                    )
+                                                                }
+                                                                color="blue"
+                                                            >
+                                                                Asignar
+                                                            </Button>
+                                                            <Button
+                                                                onClick={() =>
+                                                                    handleRemoverProblemas(
+                                                                        id
+                                                                    )
+                                                                }
+                                                                color="red"
+                                                            >
+                                                                Remover
+                                                            </Button>
                                                         </div>
                                                     </td>
                                                 </tr>
