@@ -123,7 +123,7 @@ function CandidatoManagement() {
                                                 <Typography
                                                     variant="small"
                                                     color="blue-gray"
-                                                    className="font-normal leading-none opacity-70"
+                                                    className="font-bold leading-none opacity-70"
                                                 >
                                                     {head}
                                                 </Typography>
@@ -234,7 +234,7 @@ function CandidatoManagement() {
                                                                             }
                                                                             variant="small"
                                                                             color="blue"
-                                                                            className="font-normal"
+                                                                            className="font-bold"
                                                                         >
                                                                             {
                                                                                 problem.titulo
@@ -246,7 +246,7 @@ function CandidatoManagement() {
                                                                 <Typography
                                                                     variant="small"
                                                                     color="red"
-                                                                    className="font-normal"
+                                                                    className="font-bold"
                                                                 >
                                                                     El candidato
                                                                     no tiene
