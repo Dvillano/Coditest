@@ -29,7 +29,8 @@ function CandidatoManagement() {
     const { authUser, isLoading } = useFirebaseAuth();
     const { handleNavigate } = useNavigation();
 
-    const { fetchUser, fetchUsers, fetchUserProgress } = useFirestore();
+    const { fetchUser, fetchUsers, fetchUserProgress, fetchAssignedProblems } =
+        useFirestore();
 
     const [user, setUser] = useState(null);
     const [listaCandidatos, setListaCandidatos] = useState([]);
@@ -48,17 +49,23 @@ function CandidatoManagement() {
                         const usuarios = await fetchUsers();
 
                         // Guarda solo usuarios con el rol de candidatos
-                        setListaCandidatos(
-                            usuarios.filter((el) => el.rol === "candidato")
+                        const candidatos = usuarios.filter(
+                            (el) => el.rol === "candidato"
                         );
 
-                        listaCandidatos.forEach(async (candidato) => {
-                            const userProgress = await fetchUserProgress(
-                                candidato.id
-                            );
+                        // Fetch assigned problems for each candidate
+                        const updatedCandidatos = await Promise.all(
+                            candidatos.map(async (candidato) => {
+                                const problemasAsignados =
+                                    await fetchAssignedProblems(candidato.id);
+                                return {
+                                    ...candidato,
+                                    problemasAsignados,
+                                };
+                            })
+                        );
 
-                            console.log(userProgress);
-                        });
+                        setListaCandidatos(updatedCandidatos);
                     } else {
                         toast.error("Acceso no autorizado");
                         handleNavigate("/");
@@ -133,7 +140,9 @@ function CandidatoManagement() {
                                                 apellido,
                                                 email,
                                                 nivel,
+                                                problemasAsignados,
                                             },
+
                                             index
                                         ) => {
                                             const isLast =
@@ -208,6 +217,43 @@ function CandidatoManagement() {
                                                                     ? "N/A"
                                                                     : nivel}
                                                             </Typography>
+                                                        </div>
+                                                    </td>
+                                                    <td className={classes}>
+                                                        {/* Problemas Asignados */}
+                                                        <div className="flex flex-col">
+                                                            {problemasAsignados.length >
+                                                            0 ? (
+                                                                problemasAsignados.map(
+                                                                    (
+                                                                        problem
+                                                                    ) => (
+                                                                        <Typography
+                                                                            key={
+                                                                                problem.id
+                                                                            }
+                                                                            variant="small"
+                                                                            color="blue"
+                                                                            className="font-normal"
+                                                                        >
+                                                                            {
+                                                                                problem.titulo
+                                                                            }
+                                                                        </Typography>
+                                                                    )
+                                                                )
+                                                            ) : (
+                                                                <Typography
+                                                                    variant="small"
+                                                                    color="red"
+                                                                    className="font-normal"
+                                                                >
+                                                                    El candidato
+                                                                    no tiene
+                                                                    problemas
+                                                                    asignados
+                                                                </Typography>
+                                                            )}
                                                         </div>
                                                     </td>
                                                 </tr>
