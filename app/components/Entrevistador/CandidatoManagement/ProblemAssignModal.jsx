@@ -4,26 +4,48 @@ import React from "react";
 
 import { useFirestore } from "@/app/firebase/useFirestore";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
     Button,
     Dialog,
-    Tooltip,
     IconButton,
     Typography,
+    List,
+    ListItem,
+    Card,
 } from "@material-tailwind/react";
-import { PencilIcon } from "@heroicons/react/24/solid";
 
 import toast from "react-hot-toast";
 
 function ProblemAssignModal(idUser, isAssignComplete) {
-    console.log(idUser);
-    const [open, setOpen] = useState(false);
+    const { fetchUser, fetchUserProgress } = useFirestore();
 
+    const userId = idUser.idUser;
+    const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(!open);
+
+    // Buscar los problemas que no esten asignados al usuario.
+
+    const fetchUnassignedProblems = async () => {
+        try {
+            // Buscar al usuario por ID
+            const user = await fetchUser(userId);
+            const userLevel = user.nivel;
+
+            //TODO traer problemas no asignados al usuario segunsu nivel
+        } catch (error) {
+            console.error("Error fetching non-assigned problems:", error);
+            return [];
+        }
+    };
+
     return (
         <>
-            <Button onClick={handleOpen} color="blue">
+            <Button
+                onClick={handleOpen}
+                onClickCapture={fetchUnassignedProblems}
+                color="blue"
+            >
                 Asignar
             </Button>
 
@@ -42,6 +64,13 @@ function ProblemAssignModal(idUser, isAssignComplete) {
                         >
                             Asignar Problemas
                         </Typography>
+                        <Card className="w-full">
+                            <List>
+                                <ListItem>Inbox</ListItem>
+                                <ListItem>Trash</ListItem>
+                                <ListItem>Settings</ListItem>
+                            </List>
+                        </Card>
                     </div>
                 </div>
             </Dialog>
