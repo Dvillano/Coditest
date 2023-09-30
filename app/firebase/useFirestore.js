@@ -110,7 +110,6 @@ export const useFirestore = () => {
                 !userProgressSnapshot.exists() ||
                 !userProgressSnapshot.data().problemasAsignados
             ) {
-                console.log("El usuario no tiene problemas asignados");
                 return [];
             }
 

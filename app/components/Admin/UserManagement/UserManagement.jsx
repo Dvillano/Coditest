@@ -68,7 +68,7 @@ function UserManagement() {
     const [isDeleteComplete, setIsDeleteComplete] = useState(false);
 
     const handleRowClick = (userId) => {
-        setSelectedUserId(userId); //TODO Se actualiza el state por cada .map renderizado
+        setSelectedUserId(userId);
     };
 
     const handleSearch = (event) => {

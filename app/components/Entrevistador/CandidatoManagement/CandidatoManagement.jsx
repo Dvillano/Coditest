@@ -7,6 +7,7 @@ import { useNavigation } from "@/app/utils/useNavigation";
 
 import Loading from "../../UserInterface/Loading";
 import toast from "react-hot-toast";
+import ProblemAssignModal from "./ProblemAssignModal";
 
 import {
     Card,
@@ -36,6 +37,7 @@ function CandidatoManagement() {
     const [user, setUser] = useState(null);
     const [listaCandidatos, setListaCandidatos] = useState([]);
     const [selectedUserId, setSelectedUserId] = useState(null);
+    const [isAssignComplete, setIsAssignComplete] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -81,7 +83,7 @@ function CandidatoManagement() {
     }, [authUser]);
 
     const handleRowClick = (userId) => {
-        setSelectedUserId(userId); //TODO Se actualiza el state por cada .map renderizado
+        setSelectedUserId(userId);
     };
 
     if (isLoading || !authUser) {
@@ -260,16 +262,14 @@ function CandidatoManagement() {
                                                     <td className={classes}>
                                                         {/* Botones de Asignar y Remover Problemas */}
                                                         <div className="flex items-center space-x-2">
-                                                            <Button
-                                                                onClick={() =>
-                                                                    handleAsignarProblemas(
-                                                                        id
-                                                                    )
+                                                            <ProblemAssignModal
+                                                                idUser={
+                                                                    selectedUserId
                                                                 }
-                                                                color="blue"
-                                                            >
-                                                                Asignar
-                                                            </Button>
+                                                                isEditComplete={
+                                                                    setIsAssignComplete
+                                                                }
+                                                            />
                                                             <Button
                                                                 onClick={() =>
                                                                     handleRemoverProblemas(
