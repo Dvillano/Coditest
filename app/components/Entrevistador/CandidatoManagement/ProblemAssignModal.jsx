@@ -8,21 +8,24 @@ import { useState, useEffect } from "react";
 import {
     Button,
     Dialog,
-    IconButton,
     Typography,
     List,
     ListItem,
     Card,
+    Checkbox,
 } from "@material-tailwind/react";
+import { PlusIcon } from "@heroicons/react/24/solid";
 
 import toast from "react-hot-toast";
+import { update } from "firebase/database";
 
 function ProblemAssignModal({ selectedRow, isAssignComplete }) {
-    const { fetchUnassignedProblems } = useFirestore();
+    const { fetchUnassignedProblems, editDocument } = useFirestore();
 
     const [listaProblemasSinAsignar, setListaProblemasSinAsignar] = useState(
         []
     );
+    const [selectedProblems, setSelectedProblems] = useState([]);
 
     const userId = selectedRow;
     const [open, setOpen] = useState(false);
@@ -34,9 +37,47 @@ function ProblemAssignModal({ selectedRow, isAssignComplete }) {
         setListaProblemasSinAsignar(lista);
     };
 
+    const handleProblemSelection = (problema) => {
+        console.log(problema);
+        const problemId = problema.id;
+        setSelectedProblems((prevSelectedProblems) => {
+            if (prevSelectedProblems.includes(problemId)) {
+                // Remove the problem ID if it's already selected
+                return prevSelectedProblems.filter((id) => id !== problemId);
+            } else {
+                // Add the problem ID if it's not selected
+                return [...prevSelectedProblems, problemId];
+            }
+        });
+    };
+
+    const handleSave = async () => {
+        try {
+            const problemasAsignados = selectedProblems.map((problemId) => ({
+                completionTimestamp: "",
+                problemId: problemId,
+                status: "asignado",
+            }));
+
+            await editDocument("progresoUsuario", userId, {
+                problemasAsignados: problemasAsignados,
+            });
+
+            // TODO Refrescar base
+            isAssignComplete(true);
+            setOpen(false);
+            toast.success("Problemas asignados con éxito.");
+        } catch (error) {
+            toast.error("No se pudieron asignar los problemas.");
+            console.error("Error al asignar problemas:", error);
+        }
+    };
+
     return (
         <>
             <Button
+                variant="gradient"
+                className="w-full"
                 onClick={handleOpen}
                 onClickCapture={() => handleFetch(userId)}
                 color="blue"
@@ -50,8 +91,8 @@ function ProblemAssignModal({ selectedRow, isAssignComplete }) {
                 handler={handleOpen}
                 className="bg-transparent shadow-none"
             >
-                <div className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden">
-                    <div className="w-full p-6 bg-white rounded-md shadow-md lg:max-w-xl">
+                <div className="flex  items-center justify-center ">
+                    <div className=" p-6 bg-white rounded-md shadow-md lg:max-w-xl">
                         <Typography
                             variant="h2"
                             color="blue-gray"
@@ -64,15 +105,36 @@ function ProblemAssignModal({ selectedRow, isAssignComplete }) {
                                 <List>
                                     {listaProblemasSinAsignar.map(
                                         (problema) => (
-                                            <ListItem key={problema.id}>
-                                                {problema.titulo}
+                                            <ListItem
+                                                key={problema.id}
+                                                className="flex justify-between items-center"
+                                            >
+                                                <label className="flex items-center">
+                                                    <Checkbox
+                                                        onChange={() =>
+                                                            handleProblemSelection(
+                                                                problema
+                                                            )
+                                                        }
+                                                        checked={selectedProblems.includes(
+                                                            problema.id
+                                                        )}
+                                                    />
+                                                    {problema.titulo}
+                                                </label>
                                             </ListItem>
                                         )
                                     )}
+                                    <Button
+                                        onClick={handleSave}
+                                        variant="gradient"
+                                    >
+                                        Asignar
+                                    </Button>
                                 </List>
                             ) : (
                                 <Typography
-                                    variant="body"
+                                    variant="paragraph"
                                     color="red"
                                     className="text-center mt-5"
                                 >

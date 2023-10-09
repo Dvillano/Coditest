@@ -31,7 +31,7 @@ export const updateUserStatusOnLogout = (user) => {
         const userEmail = user.email;
 
         const userStatusRef = ref(realtimeDatabase, `userStatus/${userUid}`);
-        console.log(userStatusRef);
+
         // Set user status to "offline" and update lastOnline timestamp
         set(userStatusRef, {
             email: userEmail,

@@ -36,7 +36,6 @@ function CandidatoManagement() {
 
     const [user, setUser] = useState(null);
     const [listaCandidatos, setListaCandidatos] = useState([]);
-    const [selectedUserId, setSelectedUserId] = useState(null);
 
     const [isAssignComplete, setIsAssignComplete] = useState(false);
 
@@ -68,7 +67,7 @@ function CandidatoManagement() {
                                 };
                             })
                         );
-
+                        setIsAssignComplete(false);
                         setListaCandidatos(updatedCandidatos);
                     } else {
                         toast.error("Acceso no autorizado");
@@ -81,7 +80,7 @@ function CandidatoManagement() {
         };
 
         fetchData();
-    }, [authUser]);
+    }, [authUser, isAssignComplete]);
 
     if (isLoading || !authUser) {
         return <Loading />;
@@ -96,7 +95,7 @@ function CandidatoManagement() {
                             shadow={false}
                             className="rounded-none"
                         >
-                            <div className="mb-8 flex items-center justify-between gap-8">
+                            <div className="mb-8 flex items-center justify-between ">
                                 <div>
                                     <Typography variant="h5" color="blue-gray">
                                         Lista de Candidatos
@@ -112,13 +111,13 @@ function CandidatoManagement() {
                             </div>
                         </CardHeader>
                         <CardBody className="px-0">
-                            <table className="w-full min-w-max table-auto text-left">
+                            <table className="w-full table-auto text-center">
                                 <thead>
                                     <tr>
                                         {TABLE_HEAD.map((head) => (
                                             <th
                                                 key={head}
-                                                className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4 text-center"
+                                                className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-2 text-center"
                                             >
                                                 <Typography
                                                     variant="small"
@@ -149,16 +148,11 @@ function CandidatoManagement() {
                                                 index ===
                                                 listaCandidatos.length - 1;
                                             const classes = isLast
-                                                ? "p-4"
-                                                : "p-4 border-b border-blue-gray-50";
+                                                ? "p-2"
+                                                : "p-2 border-b border-blue-gray-50";
 
                                             return (
-                                                <tr
-                                                    key={id}
-                                                    onClick={() => {
-                                                        console.log(id);
-                                                    }}
-                                                >
+                                                <tr key={id}>
                                                     <td className={classes}>
                                                         <div className="flex items-center gap-3">
                                                             <div className="flex flex-col">
@@ -265,16 +259,6 @@ function CandidatoManagement() {
                                                                     setIsAssignComplete
                                                                 }
                                                             />
-                                                            <Button
-                                                                onClick={() =>
-                                                                    handleRemoverProblemas(
-                                                                        id
-                                                                    )
-                                                                }
-                                                                color="red"
-                                                            >
-                                                                Remover
-                                                            </Button>
                                                         </div>
                                                     </td>
                                                 </tr>

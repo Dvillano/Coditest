@@ -64,7 +64,7 @@ export const useFirestore = () => {
     const editDocument = async (collectionName, idDoc, data) => {
         const docRef = doc(db, collectionName, idDoc);
         try {
-            await setDoc(docRef, data, { merge: true });
+            await updateDoc(docRef, data, { merge: true });
         } catch (error) {
             throw new Error(
                 "Error al editar informacion del usuario: " + error.message

@@ -39,8 +39,6 @@ const Registration = () => {
             };
 
             await insertUser(user, userData);
-
-            console.log("User registered successfully!");
         } catch (error) {
             console.error("Error al registrarse:", error);
         } finally {
