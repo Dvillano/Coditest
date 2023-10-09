@@ -63,10 +63,12 @@ function ProblemAssignModal({ selectedRow, isAssignComplete }) {
                 problemasAsignados: problemasAsignados,
             });
 
-            // TODO Refrescar base
             isAssignComplete(true);
             setOpen(false);
-            toast.success("Problemas asignados con éxito.");
+
+            if (selectedProblems.length > 0) {
+                toast.success("Problemas asignados con éxito.");
+            }
         } catch (error) {
             toast.error("No se pudieron asignar los problemas.");
             console.error("Error al asignar problemas:", error);

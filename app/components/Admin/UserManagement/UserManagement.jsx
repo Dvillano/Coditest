@@ -31,7 +31,6 @@ function UserManagement() {
         "Email",
         "Rol",
         "Nivel",
-        "Tiene pruebas asignadas",
         "",
         " ",
     ];
