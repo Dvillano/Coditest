@@ -35,7 +35,6 @@ const Registration = () => {
                 nivel,
                 email,
                 rol: "candidato",
-                tienePruebasAsignadas: true, //TODO revisar si se seguira utilizando este campo
             };
 
             await insertUser(user, userData);

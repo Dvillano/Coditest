@@ -221,7 +221,6 @@ function UserManagement() {
                                                 email,
                                                 rol,
                                                 nivel,
-                                                tienePruebasAsignadas,
                                             },
                                             index
                                         ) => {
@@ -314,23 +313,6 @@ function UserManagement() {
                                                                 {nivel == null
                                                                     ? "N/A"
                                                                     : nivel}
-                                                            </Typography>
-                                                        </div>
-                                                    </td>
-                                                    <td className={classes}>
-                                                        <div className="flex flex-col">
-                                                            <Typography
-                                                                variant="small"
-                                                                color="blue-gray"
-                                                                className="font-normal"
-                                                            >
-                                                                {rol ==
-                                                                "candidato"
-                                                                    ? tienePruebasAsignadas ==
-                                                                      "true"
-                                                                        ? "Si"
-                                                                        : "No"
-                                                                    : "N/A"}
                                                             </Typography>
                                                         </div>
                                                     </td>
