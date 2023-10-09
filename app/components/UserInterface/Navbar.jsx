@@ -85,15 +85,7 @@ const Navbar = () => {
                                 }
                                 className="text-white cursor-pointer"
                             >
-                                Candidatos
-                            </a>
-                            <a
-                                onClick={() =>
-                                    handleNavigate("entrevistador/reportes")
-                                }
-                                className="text-white cursor-pointer"
-                            >
-                                Reportes
+                                Asignar problemas
                             </a>
                         </>
                     )}

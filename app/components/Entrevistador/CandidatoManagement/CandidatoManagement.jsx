@@ -14,8 +14,10 @@ import {
     CardHeader,
     Typography,
     CardBody,
-    Button,
+    Input,
 } from "@material-tailwind/react";
+
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 function CandidatoManagement() {
     const TABLE_HEAD = [
@@ -36,8 +38,25 @@ function CandidatoManagement() {
 
     const [user, setUser] = useState(null);
     const [listaCandidatos, setListaCandidatos] = useState([]);
-
+    const [searchQuery, setSearchQuery] = useState("");
     const [isAssignComplete, setIsAssignComplete] = useState(false);
+
+    const handleSearch = (event) => {
+        const query = event.target.value.toLowerCase();
+        setSearchQuery(query);
+    };
+
+    const filterUsersBySearch = (query) => {
+        return listaCandidatos.filter(
+            (user) =>
+                user.nombre.toLowerCase().includes(query) ||
+                user.apellido.toLowerCase().includes(query) ||
+                user.email.toLowerCase().includes(query)
+        );
+    };
+
+    // Filter users based on search query
+    const filteredUsersBySearch = filterUsersBySearch(searchQuery);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -109,6 +128,16 @@ function CandidatoManagement() {
                                     </Typography>
                                 </div>
                             </div>
+                            <div className="w-full md:w-72">
+                                <Input
+                                    label="Buscar"
+                                    icon={
+                                        <MagnifyingGlassIcon className="h-5 w-5" />
+                                    }
+                                    value={searchQuery}
+                                    onChange={handleSearch}
+                                />
+                            </div>
                         </CardHeader>
                         <CardBody className="px-0">
                             <table className="w-full table-auto text-center">
@@ -131,7 +160,7 @@ function CandidatoManagement() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {listaCandidatos.map(
+                                    {filteredUsersBySearch.map(
                                         (
                                             {
                                                 id,
@@ -146,7 +175,8 @@ function CandidatoManagement() {
                                         ) => {
                                             const isLast =
                                                 index ===
-                                                listaCandidatos.length - 1;
+                                                filteredUsersBySearch.length -
+                                                    1;
                                             const classes = isLast
                                                 ? "p-2"
                                                 : "p-2 border-b border-blue-gray-50";
