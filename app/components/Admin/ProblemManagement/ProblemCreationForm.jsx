@@ -23,7 +23,12 @@ function ProblemCreationForm() {
         descripcion: "",
         sugerencia: "",
         plantilla_codigo: "",
-        codigo_evaluador: [],
+        codigo_evaluador: [
+            {
+                entrada: [],
+                salidaEsperada: [],
+            },
+        ],
     };
 
     const [formData, setFormData] = useState(initialFormData);
@@ -68,7 +73,22 @@ function ProblemCreationForm() {
                 formData.codigo_evaluador.length > 0 &&
                 formData.sugerencia
             ) {
-                await insertProblem(formData);
+                // Convert entrada and salidaEsperada fields to arrays
+                const formattedData = {
+                    ...formData,
+                };
+
+                // Ensure entrada and salidaEsperada fields are arrays
+                formattedData.codigo_evaluador.forEach((item) => {
+                    if (!Array.isArray(item.entrada)) {
+                        item.entrada = [item.entrada];
+                    }
+                    if (!Array.isArray(item.salidaEsperada)) {
+                        item.salidaEsperada = [item.salidaEsperada];
+                    }
+                });
+
+                await insertProblem(formattedData);
                 toast.success("Problema guardado correctamente!");
                 handleNavigate("admin/problems");
             } else {
@@ -86,14 +106,36 @@ function ProblemCreationForm() {
         const { name, value } = e.target;
 
         if (name.startsWith("codigo_evaluador.")) {
-            const index = parseInt(name.split(".")[1], 10);
+            const [index, field] = name.split(".").slice(1);
 
             setFormData((prevState) => {
                 const newCodigoEvaluador = [...prevState.codigo_evaluador];
-                newCodigoEvaluador[index] = {
-                    ...newCodigoEvaluador[index],
-                    [name.split(".")[2]]: value,
-                };
+                if (!newCodigoEvaluador[index]) {
+                    newCodigoEvaluador[index] = {
+                        entrada: [], // Initialize as an array
+                        salidaEsperada: [], // Initialize as an array
+                    };
+                }
+                // Check if the value is an array (between square brackets)
+                if (value.startsWith("[") && value.endsWith("]")) {
+                    try {
+                        // Try to parse the value as JSON
+                        const parsedValue = JSON.parse(value);
+                        // Check if the parsed value is an array
+                        if (Array.isArray(parsedValue)) {
+                            newCodigoEvaluador[index][field] = parsedValue;
+                        } else {
+                            // If it's not an array, store it as a string
+                            newCodigoEvaluador[index][field] = value;
+                        }
+                    } catch (error) {
+                        // If parsing as JSON fails, store it as a string
+                        newCodigoEvaluador[index][field] = value;
+                    }
+                } else {
+                    // If it's not between square brackets, store it as a string
+                    newCodigoEvaluador[index][field] = value;
+                }
                 return {
                     ...prevState,
                     codigo_evaluador: newCodigoEvaluador,
@@ -112,7 +154,7 @@ function ProblemCreationForm() {
             ...prevState,
             codigo_evaluador: [
                 ...prevState.codigo_evaluador,
-                { entrada: "", salidaEsperada: "" },
+                { entrada: [], salidaEsperada: [] }, // Initialize as arrays
             ],
         }));
     };

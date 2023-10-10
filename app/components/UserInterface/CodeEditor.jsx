@@ -67,6 +67,7 @@ function CodeEditor() {
                     evalFn(testCase.entrada) == testCase.salidaEsperada
             );
 
+            console.log(results);
             // Verifica si todos los resultados fueron correctos
             const allTestsPassed = results.every((result) => result);
 
