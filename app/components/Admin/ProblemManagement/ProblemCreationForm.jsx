@@ -163,6 +163,33 @@ function ProblemCreationForm() {
         <div className=" flex flex-col items-center justify-center  min-h-screen overflow-hidden">
             <div className="w-full p-6 bg-white rounded-md shadow-md lg:max-w-xl">
                 <form className="mt-6">
+                    <a
+                        class="!font-medium !text-blue-gray-900 !transition-colors hover:!text-black flex justify-end"
+                        href="/admin/problems"
+                    >
+                        <button
+                            class="flex select-none items-center gap-2 rounded-lg py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-black-500 transition-all hover:bg-black/10 active:bg-black-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                            type="button"
+                            data-ripple-dark="true"
+                        >
+                            Volver
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="2"
+                                stroke="currentColor"
+                                aria-hidden="true"
+                                class="h-4 w-4"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
+                                ></path>
+                            </svg>
+                        </button>
+                    </a>
                     <div className="mb-4">
                         <label
                             className="block text-sm font-semibold text-gray-800"

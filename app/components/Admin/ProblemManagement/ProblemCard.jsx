@@ -12,24 +12,28 @@ import ProblemDeleteModal from "./ProblemDeleteModal";
 function ProblemCard({ problem, isDeleteComplete }) {
     return (
         <>
-            <Card className="mt-6 w-100">
-                <CardBody>
-                    <Typography
-                        variant="h5"
-                        color="blue-gray"
-                        className="mb-2 text-center"
-                    >
-                        {problem.titulo}
-                    </Typography>
-                    <Typography>{problem.descripcion}</Typography>
+            <Card className="m-3">
+                <CardBody className="flex flex-col h-full">
+                    <div className="flex-grow">
+                        <Typography
+                            variant="h5"
+                            color="blue-gray"
+                            className="mb-2 text-center"
+                        >
+                            {problem.titulo}
+                        </Typography>
+                        <Typography>{problem.descripcion}</Typography>
+                    </div>
+                    <div className="mt-auto">
+                        <CardFooter className="flex justify-between">
+                            <ProblemDetailsModal problem={problem} />
+                            <ProblemDeleteModal
+                                idProblem={problem.id}
+                                isDeleteComplete={isDeleteComplete}
+                            />
+                        </CardFooter>
+                    </div>
                 </CardBody>
-                <CardFooter className="pt-0 flex justify-between">
-                    <ProblemDetailsModal problem={problem} />
-                    <ProblemDeleteModal
-                        idProblem={problem.id}
-                        isDeleteComplete={isDeleteComplete}
-                    />
-                </CardFooter>
             </Card>
         </>
     );

@@ -9,10 +9,35 @@ import Loading from "../../UserInterface/Loading";
 import ProblemCard from "./ProblemCard";
 import toast from "react-hot-toast";
 
-import { Button } from "@material-tailwind/react";
+import {
+    Button,
+    Tabs,
+    TabsHeader,
+    Tab,
+    Typography,
+} from "@material-tailwind/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
 
 function ProblemManagement() {
+    const TABS = [
+        {
+            label: "Todos",
+            value: "todos",
+        },
+        {
+            label: "Principiante",
+            value: "principiante",
+        },
+        {
+            label: "Intermedio",
+            value: "intermedio",
+        },
+        {
+            label: "Avanzado",
+            value: "avanzado",
+        },
+    ];
+
     const { authUser, isLoading } = useFirebaseAuth();
     const { handleNavigate } = useNavigation();
     const { fetchUser, fetchProblems } = useFirestore();
@@ -20,6 +45,18 @@ function ProblemManagement() {
     const [user, setUser] = useState(null);
     const [listaProblemas, setListaProblemas] = useState([]);
     const [isDeleteComplete, setIsDeleteComplete] = useState(false);
+    const [selectedTab, setSelectedTab] = useState("todos");
+
+    const handleTabChange = (tabValue) => {
+        setSelectedTab(tabValue);
+    };
+
+    const filterUsersByTab = (problems, tabValue) => {
+        if (tabValue === "todos") {
+            return problems;
+        }
+        return problems.filter((problems) => problems.nivel === tabValue);
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -54,26 +91,70 @@ function ProblemManagement() {
         return <Loading />;
     }
 
+    const filteredProblems = filterUsersByTab(listaProblemas, selectedTab);
+
     return (
         <>
-            {listaProblemas !== null && (
+            {filteredProblems !== null && (
                 <>
-                    <div className="flex shrink-0 flex-col gap-2 sm:flex-row m-5">
-                        <Button
-                            className="flex items-center gap-3"
-                            variant="gradient"
-                            size="sm"
-                            color="green"
-                            onClick={() =>
-                                handleNavigate("admin/problems/create")
-                            }
-                        >
-                            <PlusIcon strokeWidth={2} className="h-4 w-4" />{" "}
-                            Agregar problema
-                        </Button>
+                    <div className="flex flex-col m-14 ">
+                        <div className="flex items-center justify-between mb-5">
+                            <div>
+                                <Typography variant="h5" color="blue-gray">
+                                    Lista de problemas
+                                </Typography>
+                                <Typography
+                                    color="gray"
+                                    className="mt-1 font-normal"
+                                >
+                                    Informacion de todos los problemas de
+                                    programacion
+                                </Typography>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-between">
+                            <div className="sm:flex-row">
+                                <Button
+                                    className="flex items-center gap-3 mb-0"
+                                    variant="gradient"
+                                    size="md"
+                                    color="green"
+                                    onClick={() =>
+                                        handleNavigate("admin/problems/create")
+                                    }
+                                >
+                                    <PlusIcon
+                                        strokeWidth={2}
+                                        className="h-4 w-4"
+                                    />{" "}
+                                    Agregar problema
+                                </Button>
+                            </div>
+                            <div className="gap-4 md:flex-row">
+                                <Tabs
+                                    value={selectedTab}
+                                    className="w-full md:w-max "
+                                >
+                                    <TabsHeader className="rounded-none border-b border-blue-gray-50 bg-transparent p-0">
+                                        {TABS.map(({ label, value }) => (
+                                            <Tab
+                                                key={label}
+                                                value={value}
+                                                onClick={() =>
+                                                    handleTabChange(value)
+                                                }
+                                            >
+                                                &nbsp;&nbsp;{label}&nbsp;&nbsp;
+                                            </Tab>
+                                        ))}
+                                    </TabsHeader>
+                                </Tabs>
+                            </div>
+                        </div>
                     </div>
-                    <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-3">
-                        {listaProblemas.map((problem) => (
+                    <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-3 m-10">
+                        {filteredProblems.map((problem) => (
                             <ProblemCard
                                 key={problem.id}
                                 problem={problem}
