@@ -47,6 +47,7 @@ function UserDeleteModal({ idUser, isDeleteComplete }) {
                     />
                 </IconButton>
             </Tooltip>
+
             <Dialog open={open} handler={handleOpen}>
                 <DialogHeader>Confirmacion</DialogHeader>
                 <DialogBody divider>

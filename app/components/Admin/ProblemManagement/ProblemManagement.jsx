@@ -136,7 +136,7 @@ function ProblemManagement() {
                                     value={selectedTab}
                                     className="w-full md:w-max "
                                 >
-                                    <TabsHeader className="rounded-none border-b border-blue-gray-50 bg-transparent p-0">
+                                    <TabsHeader className=" bg-gray-500">
                                         {TABS.map(({ label, value }) => (
                                             <Tab
                                                 key={label}

@@ -84,7 +84,7 @@ function ProblemAssignModal({ selectedRow, isAssignComplete }) {
                 onClickCapture={() => handleFetch(userId)}
                 color="blue"
             >
-                Asignar
+                Asignar problemas
             </Button>
 
             <Dialog

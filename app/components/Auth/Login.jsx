@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigation } from "../../utils/useNavigation";
 import { useFirebaseAuth } from "../../firebase/useFirebaseAuth";
 import { useFirestore } from "../../firebase/useFirestore";
+import { validateEmail, validatePassword } from "../../utils/formValidation";
 
 import Loading from "../UserInterface/Loading";
 
@@ -17,14 +18,37 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [user, setUser] = useState(null);
+    const [errors, setErrors] = useState({ email: "", password: "" });
 
     const handleLogin = async (e) => {
         e.preventDefault();
 
-        try {
-            await signInFirebase(email, password);
-        } catch (error) {
-            console.error("Error al iniciar sesión:", error);
+        // Borro errores anteriores
+        setErrors({ email: "", password: "" });
+
+        // Validacion de campos
+        let isValid = true;
+        const emailError = validateEmail(email);
+        if (emailError) {
+            setErrors((prevErrors) => ({ ...prevErrors, email: emailError }));
+            isValid = false;
+        }
+
+        const passwordError = validatePassword(password);
+        if (passwordError) {
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                password: passwordError,
+            }));
+            isValid = false;
+        }
+
+        if (isValid) {
+            try {
+                await signInFirebase(email, password);
+            } catch (error) {
+                console.error("Error al iniciar sesión:", error);
+            }
         }
     };
 
@@ -39,7 +63,7 @@ const Login = () => {
                 }
             }
         };
-        fetchUserFromFirestore(); // Call the fetch function
+        fetchUserFromFirestore();
     }, [authUser]);
 
     useEffect(() => {
@@ -79,6 +103,11 @@ const Login = () => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
+                        {errors.email && (
+                            <p className="text-red-500 text-sm mt-2">
+                                {errors.email}
+                            </p>
+                        )}
                     </div>
                     <div className="mb-2">
                         <label
@@ -94,6 +123,11 @@ const Login = () => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
+                        {errors.password && (
+                            <p className="text-red-500 text-sm mt-2">
+                                {errors.password}
+                            </p>
+                        )}
                     </div>
 
                     <Button
@@ -104,7 +138,7 @@ const Login = () => {
                         Ingresar{" "}
                     </Button>
                     <p className="mt-6 ml-1">
-                        No tienes cuenta ?{" "}
+                        No tienes cuenta?{" "}
                         <span
                             className="underline hover:text-blue-400 cursor-pointer"
                             onClick={() => {

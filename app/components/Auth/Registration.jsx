@@ -4,6 +4,12 @@ import React, { useState, useEffect } from "react";
 import { useFirebaseAuth } from "../../firebase/useFirebaseAuth";
 import { useFirestore } from "../../firebase/useFirestore";
 import { useNavigation } from "../../utils/useNavigation";
+import {
+    validateEmail,
+    validatePassword,
+    validateName,
+    validateLastName,
+} from "../../utils/formValidation";
 
 import Loading from "../UserInterface/Loading";
 
@@ -20,28 +26,44 @@ const Registration = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [errors, setErrors] = useState({ email: "", password: "" });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        try {
-            setIsLoading(true);
+        // Validacion de campos
+        const emailError = validateEmail(email);
+        const passwordError = validatePassword(password);
+        const nameError = validateName(nombre);
+        const lastNameError = validateLastName(apellido);
 
-            const { user } = await signUpFirebase(email, password);
+        if (!emailError && !passwordError && !nameError && !lastNameError) {
+            try {
+                setIsLoading(true);
 
-            const userData = {
-                nombre,
-                apellido,
-                nivel,
-                email,
-                rol: "candidato",
-            };
+                const { user } = await signUpFirebase(email, password);
 
-            await insertUser(user, userData);
-        } catch (error) {
-            console.error("Error al registrarse:", error);
-        } finally {
-            setIsLoading(false);
+                const userData = {
+                    nombre,
+                    apellido,
+                    nivel,
+                    email,
+                    rol: "candidato",
+                };
+
+                await insertUser(user, userData);
+            } catch (error) {
+                console.error("Error al registrarse:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        } else {
+            setErrors({
+                email: emailError,
+                password: passwordError,
+                name: nameError,
+                lastName: lastNameError,
+            });
         }
     };
 
@@ -76,6 +98,11 @@ const Registration = () => {
                             value={nombre}
                             onChange={(e) => setNombre(e.target.value)}
                         />
+                        {errors.name && (
+                            <p className="text-red-500 text-sm mt-2">
+                                {errors.name}
+                            </p>
+                        )}
                     </div>
                     <div className="mb-4">
                         <label
@@ -91,6 +118,11 @@ const Registration = () => {
                             value={apellido}
                             onChange={(e) => setApellido(e.target.value)}
                         />
+                        {errors.lastName && (
+                            <p className="text-red-500 text-sm mt-2">
+                                {errors.lastName}
+                            </p>
+                        )}
                     </div>
                     <div className="mb-4">
                         <label
@@ -124,6 +156,11 @@ const Registration = () => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
+                        {errors.email && (
+                            <p className="text-red-500 text-sm mt-2">
+                                {errors.email}
+                            </p>
+                        )}
                     </div>
                     <div className="mb-2">
                         <label
@@ -139,6 +176,11 @@ const Registration = () => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
+                        {errors.password && (
+                            <p className="text-red-500 text-sm mt-2">
+                                {errors.password}
+                            </p>
+                        )}
                     </div>
                     <Button
                         type="submit"
@@ -149,7 +191,7 @@ const Registration = () => {
                         {isLoading ? <Loading /> : "Registrarse"}
                     </Button>
                     <p className="mt-6 ml-1">
-                        Ya tienes una cuenta ?{" "}
+                        Ya tienes una cuenta?{" "}
                         <span
                             className="underline hover:text-blue-400 cursor-pointer"
                             onClick={() => {
