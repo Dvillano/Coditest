@@ -14,6 +14,7 @@ import {
     limit,
 } from "firebase/firestore";
 import { db } from "./firebaseConfig";
+import { loadGetInitialProps } from "next/dist/shared/lib/utils";
 
 export const useFirestore = () => {
     const insertUser = async (user, userData) => {
@@ -305,7 +306,6 @@ export const useFirestore = () => {
             const activityLogs = logsSnapshot.docs.map((doc) => {
                 return { id: doc.id, ...doc.data() };
             });
-
             return activityLogs;
         } catch (error) {
             console.error("Error fetching user activity logs:", error);

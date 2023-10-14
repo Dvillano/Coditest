@@ -71,7 +71,7 @@ export default function AdminDashboard() {
             {userActivityLogs !== null &&
                 totalProblems !== null &&
                 totalUsers !== null && (
-                    <>
+                    <div className="grid grid-cols-2 gap-4 m-5">
                         {/* User Activity Logs */}
                         <LogTable logs={userActivityLogs} />
 
@@ -102,7 +102,7 @@ export default function AdminDashboard() {
                                 </CardBody>
                             </Card>
                         </div>
-                    </>
+                    </div>
                 )}
         </>
     );
