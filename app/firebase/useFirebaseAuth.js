@@ -7,12 +7,7 @@ import {
     createUserWithEmailAndPassword,
     signOut,
 } from "firebase/auth";
-import {
-    logSignIn,
-    logSignOut,
-    logRegistration,
-    logError,
-} from "./firebaseLogger";
+import { logSignIn, logSignOut, logRegistration } from "./firebaseLogger";
 import { auth } from "./firebaseConfig";
 
 import { toast } from "react-hot-toast";
@@ -45,9 +40,6 @@ export const useFirebaseAuth = () => {
             toast.success("Registrado correctamente");
             return userCredential;
         } catch (error) {
-            // Log the error event
-            logError(error);
-
             toast.error("Error al registrarse");
             console.error("Error signing up:", error);
             throw error;
@@ -67,7 +59,7 @@ export const useFirebaseAuth = () => {
             }
             toast.success("Ingreso Correcto");
         } catch (error) {
-            logError(error);
+            error;
             toast.error("Error al iniciar sesión");
 
             console.error("Error signing in:", error);
@@ -87,7 +79,7 @@ export const useFirebaseAuth = () => {
             }
             await signOut(auth);
         } catch (error) {
-            logError(error);
+            error;
 
             console.error("Error signing out:", error);
         }
