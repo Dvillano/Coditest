@@ -32,7 +32,6 @@ function UserManagement() {
         "Rol",
         "Nivel",
         "",
-        " ",
     ];
 
     const TABS = [
@@ -140,7 +139,7 @@ function UserManagement() {
         <>
             {listaUsuarios !== null && (
                 <>
-                    <Card className="h-full w-full">
+                    <Card className="m-5">
                         <CardHeader
                             floated={false}
                             shadow={false}
@@ -191,7 +190,7 @@ function UserManagement() {
                             </div>
                         </CardHeader>
                         <CardBody className="px-0">
-                            <table className="mt-4 w-full min-w-max table-auto text-left">
+                            <table className="mt-4 w-full  table-auto text-left">
                                 <thead>
                                     <tr>
                                         {TABLE_HEAD.map((head) => (
@@ -327,7 +326,7 @@ function UserManagement() {
                                                             />
                                                         </div>
                                                     </td>
-                                                    <td className={classes}>
+                                                    {/* <td className={classes}>
                                                         <div className="flex flex-col">
                                                             <UserDeleteModal
                                                                 idUser={
@@ -338,7 +337,7 @@ function UserManagement() {
                                                                 }
                                                             />
                                                         </div>
-                                                    </td>
+                                                    </td> */}
                                                 </tr>
                                             );
                                         }

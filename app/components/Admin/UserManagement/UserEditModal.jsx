@@ -62,7 +62,7 @@ function UserEditModal({ idUser, isEditComplete }) {
                 handler={handleOpen}
                 className="bg-transparent shadow-none"
             >
-                <div className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden">
+                <div className="relative flex flex-col items-center justify-center  overflow-hidden">
                     <div className="w-full p-6 bg-white rounded-md shadow-md lg:max-w-xl">
                         <form className="mt-6">
                             <div className="mb-4">
