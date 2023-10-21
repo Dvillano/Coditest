@@ -108,7 +108,7 @@ function CandidatoManagement() {
         <>
             {listaCandidatos !== null && (
                 <>
-                    <Card className="h-full w-full">
+                    <Card className="m-5">
                         <CardHeader
                             floated={false}
                             shadow={false}

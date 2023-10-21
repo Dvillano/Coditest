@@ -96,6 +96,22 @@ export const useFirestore = () => {
         } catch (error) {}
     };
 
+    const fetchAllUsersProgress = async () => {
+        try {
+            const userProgressSnapshot = await getDocs(
+                collection(db, "progresoUsuario")
+            );
+            if (!userProgressSnapshot.empty) {
+                const userProgressData = userProgressSnapshot.docs.map(
+                    (doc) => ({
+                        ...doc.data(),
+                    })
+                );
+                return userProgressData;
+            }
+        } catch (error) {}
+    };
+
     const fetchAssignedProblems = async (userId) => {
         try {
             // Buscar al usuario por ID
@@ -338,6 +354,25 @@ export const useFirestore = () => {
         }
     };
 
+    // Funcion para buscar todos los resultados de los tests
+    const fetchAllResults = async () => {
+        try {
+            const resultsCollection = collection(db, "resultados");
+            const resultsSnapshot = await getDocs(resultsCollection);
+
+            if (!resultsSnapshot.empty) {
+                const resultsData = resultsSnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                return resultsData;
+            }
+        } catch (error) {
+            console.error("Error fetching results:", error);
+            return [];
+        }
+    };
+
     return {
         insertUser,
         insertProblem,
@@ -347,6 +382,7 @@ export const useFirestore = () => {
         updatePassedProblems,
         fetchUser,
         fetchUserProgress,
+        fetchAllUsersProgress,
         fetchUsers,
         fetchUserActivityLogs,
         fetchTotalProblemsCount,
@@ -354,5 +390,6 @@ export const useFirestore = () => {
         editDocument,
         deleteDocument,
         fetchProblems,
+        fetchAllResults,
     };
 };

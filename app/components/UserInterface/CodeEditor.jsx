@@ -54,7 +54,6 @@ function CodeEditor() {
     const executeCode = () => {
         try {
             const evalFn = new Function(`return ${code}`)();
-
             // Verifica que sea una funcion el codigo
             if (typeof evalFn !== "function") {
                 toast.error("Oops! El código no es válido");
