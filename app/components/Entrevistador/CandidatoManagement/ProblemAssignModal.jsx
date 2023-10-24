@@ -38,7 +38,6 @@ function ProblemAssignModal({ selectedRow, isAssignComplete }) {
     };
 
     const handleProblemSelection = (problema) => {
-        console.log(problema);
         const problemId = problema.id;
         setSelectedProblems((prevSelectedProblems) => {
             if (prevSelectedProblems.includes(problemId)) {
