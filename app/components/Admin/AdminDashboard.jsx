@@ -52,7 +52,6 @@ export default function AdminDashboard() {
                         const usersCount = await fetchTotalUsersCount();
                         setTotalUsers(usersCount);
 
-                        console.log(userStatuses);
                         const onlineUsers = userStatuses.filter(
                             (userStatus) => userStatus.status == "online"
                         );

@@ -66,14 +66,12 @@ function CodeEditor() {
                     evalFn(testCase.entrada) == testCase.salidaEsperada
             );
 
-            console.log(results);
             // Verifica si todos los resultados fueron correctos
             const allTestsPassed = results.every((result) => result);
 
             // Actualiza la UI y guarda resultados
             handleTestResults(allTestsPassed);
         } catch (error) {
-            console.log(error.message);
             toast.error(error.message);
         }
     };
