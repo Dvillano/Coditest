@@ -26,6 +26,7 @@ function CandidatoManagement() {
         "Apellido",
         "Email",
         "Nivel",
+        "Problemas Completados",
         "Problemas Asignados",
         "",
     ];
@@ -33,8 +34,13 @@ function CandidatoManagement() {
     const { authUser, isLoading } = useFirebaseAuth();
     const { handleNavigate } = useNavigation();
 
-    const { fetchUser, fetchUsers, fetchUserProgress, fetchAssignedProblems } =
-        useFirestore();
+    const {
+        fetchUser,
+        fetchUsers,
+        fetchUserProgress,
+        fetchAssignedProblems,
+        fetchCompletedProblems,
+    } = useFirestore();
 
     const [user, setUser] = useState(null);
     const [listaCandidatos, setListaCandidatos] = useState([]);
@@ -80,12 +86,18 @@ function CandidatoManagement() {
                             candidatos.map(async (candidato) => {
                                 const problemasAsignados =
                                     await fetchAssignedProblems(candidato.id);
+
+                                const problemasCompletados =
+                                    await fetchCompletedProblems(candidato.id);
+
                                 return {
                                     ...candidato,
                                     problemasAsignados,
+                                    problemasCompletados,
                                 };
                             })
                         );
+
                         setIsAssignComplete(false);
                         setListaCandidatos(updatedCandidatos);
                     } else {
@@ -169,6 +181,7 @@ function CandidatoManagement() {
                                                 email,
                                                 nivel,
                                                 problemasAsignados,
+                                                problemasCompletados,
                                             },
 
                                             index
@@ -241,6 +254,43 @@ function CandidatoManagement() {
                                                                     ? "N/A"
                                                                     : nivel}
                                                             </Typography>
+                                                        </div>
+                                                    </td>
+                                                    <td className={classes}>
+                                                        {/* Problemas Completados */}
+                                                        <div className="flex flex-col">
+                                                            {problemasCompletados.length >
+                                                            0 ? (
+                                                                problemasCompletados.map(
+                                                                    (
+                                                                        problem
+                                                                    ) => (
+                                                                        <Typography
+                                                                            key={
+                                                                                problem.problemId
+                                                                            }
+                                                                            variant="small"
+                                                                            color="green"
+                                                                            className="font-normal"
+                                                                        >
+                                                                            {
+                                                                                problem.titulo
+                                                                            }
+                                                                        </Typography>
+                                                                    )
+                                                                )
+                                                            ) : (
+                                                                <Typography
+                                                                    variant="small"
+                                                                    color="red"
+                                                                    className="font-normal"
+                                                                >
+                                                                    El candidato
+                                                                    no tiene
+                                                                    problemas
+                                                                    completados
+                                                                </Typography>
+                                                            )}
                                                         </div>
                                                     </td>
                                                     <td className={classes}>

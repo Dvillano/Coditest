@@ -112,6 +112,47 @@ export const useFirestore = () => {
         } catch (error) {}
     };
 
+    const fetchCompletedProblems = async (userId) => {
+        try {
+            const userProgressRef = doc(db, "progresoUsuario", userId);
+            const userProgressSnapshot = await getDoc(userProgressRef);
+
+            // Revisa si el usuario tiene problemas asignados
+            if (
+                !userProgressSnapshot.exists() ||
+                !userProgressSnapshot.data().problemasAsignados
+            ) {
+                return [];
+            }
+
+            const assignedProblems =
+                userProgressSnapshot.data().problemasAsignados;
+
+            // Filtra por status: completado
+            let completedProblems = assignedProblems.filter(
+                (problem) => problem.status === "completado"
+            );
+
+            let problemsList = await fetchProblems();
+
+            completedProblems = completedProblems.map((completedProblem) => {
+                const problem = problemsList.find(
+                    (problem) => problem.id == completedProblem.problemId
+                );
+                return {
+                    ...problem,
+                    titulo: problem ? problem.titulo : null,
+                };
+            });
+
+            console.log(completedProblems);
+            return completedProblems;
+        } catch (error) {
+            console.error("Error fetching completed problems:", error);
+            return [];
+        }
+    };
+
     const fetchAssignedProblems = async (userId) => {
         try {
             // Buscar al usuario por ID
@@ -377,6 +418,7 @@ export const useFirestore = () => {
         insertUser,
         insertProblem,
         fetchAssignedProblems,
+        fetchCompletedProblems,
         fetchUnassignedProblems,
         saveResults,
         updatePassedProblems,

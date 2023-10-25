@@ -9,6 +9,7 @@ import {
 } from "firebase/auth";
 import { logSignIn, logSignOut, logRegistration } from "./firebaseLogger";
 import { auth } from "./firebaseConfig";
+import { useNavigation } from "../utils/useNavigation";
 
 import { toast } from "react-hot-toast";
 
@@ -23,6 +24,7 @@ import {
 } from "../utils/updateUserStatus";
 
 export const useFirebaseAuth = () => {
+    const { handleNavigate } = useNavigation();
     const [authUser, setAuthUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -78,6 +80,7 @@ export const useFirebaseAuth = () => {
                 updateUserStatusOnLogout(user);
             }
             await signOut(auth);
+            handleNavigate("/");
         } catch (error) {
             error;
 

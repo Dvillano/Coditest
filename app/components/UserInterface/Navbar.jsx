@@ -87,7 +87,6 @@ const Navbar = () => {
                         color="white"
                         onClick={() => {
                             signOutFirebase();
-                            handleNavigate("/");
                         }}
                     >
                         Logout
