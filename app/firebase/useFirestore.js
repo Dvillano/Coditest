@@ -6,6 +6,7 @@ import {
     setDoc,
     deleteDoc,
     updateDoc,
+    arrayUnion,
     query,
     where,
     collection,
@@ -65,12 +66,29 @@ export const useFirestore = () => {
     const editDocument = async (collectionName, idDoc, data) => {
         const docRef = doc(db, collectionName, idDoc);
         try {
-            await updateDoc(docRef, data);
+            await updateDoc(docRef, data, { merge: true });
         } catch (error) {
             throw new Error(
                 "Error al editar informacion del usuario: " + error.message
             );
         }
+    };
+
+    const updateAssignedProblem = async (collectionName, idDoc, data) => {
+        const docRef = doc(db, collectionName, idDoc);
+        data.forEach(async (element) => {
+            try {
+                await updateDoc(
+                    docRef,
+                    { problemasAsignados: arrayUnion(element) },
+                    { merge: true }
+                );
+            } catch (error) {
+                throw new Error(
+                    "Error al modificar el documento: " + error.message
+                );
+            }
+        });
     };
 
     // Borrar documento
@@ -145,7 +163,6 @@ export const useFirestore = () => {
                 };
             });
 
-            console.log(completedProblems);
             return completedProblems;
         } catch (error) {
             console.error("Error fetching completed problems:", error);
@@ -430,6 +447,7 @@ export const useFirestore = () => {
         fetchTotalProblemsCount,
         fetchTotalUsersCount,
         editDocument,
+        updateAssignedProblem,
         deleteDocument,
         fetchProblems,
         fetchAllResults,

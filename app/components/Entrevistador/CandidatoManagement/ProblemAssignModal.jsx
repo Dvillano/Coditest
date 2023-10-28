@@ -20,7 +20,7 @@ import toast from "react-hot-toast";
 import { update } from "firebase/database";
 
 function ProblemAssignModal({ selectedRow, isAssignComplete }) {
-    const { fetchUnassignedProblems, editDocument } = useFirestore();
+    const { fetchUnassignedProblems, updateAssignedProblem } = useFirestore();
 
     const [listaProblemasSinAsignar, setListaProblemasSinAsignar] = useState(
         []
@@ -58,9 +58,7 @@ function ProblemAssignModal({ selectedRow, isAssignComplete }) {
                 status: "asignado",
             }));
 
-            await editDocument("progresoUsuario", userId, {
-                problemasAsignados: problemasAsignados,
-            });
+            await updateAssignedProblem("progresoUsuario", userId, problemasAsignados);
 
             isAssignComplete(true);
             setOpen(false);
