@@ -1,41 +1,55 @@
-import { collection, addDoc, Timestamp } from "firebase/firestore";
+// firebaseLogger.js
+// Este modulo provee functions para que el usuario pueda registrar eventos en Firestore.
+
+import { collection, addDoc } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 
-// Log user sign-in event
+const COLLECTION_NAME = "logs";
+
+/**
+ * Registra un evento de inicio de sesión en Firestore.
+ *
+ * @param {Object} user - Objeto de usuario autenticado.
+ */
 export const logSignIn = (user) => {
     const logData = {
         event: "Sign-In",
         userUid: user.uid,
         userEmail: user.email,
-        timestamp: new Date().toUTCString(),
+        timestamp: new Date().toLocaleString(),
     };
 
-    // Log to Firestore (replace 'logs' with your Firestore collection name)
-    addDoc(collection(db, "logs"), logData);
+    addDoc(collection(db, COLLECTION_NAME), logData);
 };
 
-// Log user sign-out event
+/**
+ * Registra un evento de cierre de sesión en Firestore.
+ *
+ * @param {Object} user - Objeto de usuario autenticado.
+ */
 export const logSignOut = (user) => {
     const logData = {
         event: "Sign-Out",
         userUid: user.uid,
         userEmail: user.email,
-        timestamp: new Date().toUTCString(),
+        timestamp: new Date().toLocaleString(),
     };
 
-    // Log to Firestore (replace 'logs' with your Firestore collection name)
-    addDoc(collection(db, "logs"), logData);
+    addDoc(collection(db, COLLECTION_NAME), logData);
 };
 
-// Log user registration event
+/**
+ * Registra un evento de registro de usuario en Firestore.
+ *
+ * @param {Object} user - Objeto de usuario autenticado.
+ */
 export const logRegistration = (user) => {
     const logData = {
         event: "Registration",
         userUid: user.uid,
         userEmail: user.email,
-        timestamp: new Date().toUTCString(),
+        timestamp: new Date().toLocaleString(),
     };
 
-    // Log to Firestore (replace 'logs' with your Firestore collection name)
-    addDoc(collection(db, "logs"), logData);
+    addDoc(collection(db, COLLECTION_NAME), logData);
 };
