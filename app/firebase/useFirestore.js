@@ -1,4 +1,7 @@
-import { useState } from "react";
+//useFirestore.js
+// Este módulo proporciona funciones para interactuar con Firestore.
+// Se encarga de insertar usuarios y problemas, editar y eliminar documentos, y recuperar datos relacionados con usuarios y problemas.
+
 import {
     doc,
     addDoc,
@@ -8,16 +11,15 @@ import {
     updateDoc,
     arrayUnion,
     query,
-    where,
     collection,
     getDocs,
     orderBy,
     limit,
 } from "firebase/firestore";
 import { db } from "./firebaseConfig";
-import { loadGetInitialProps } from "next/dist/shared/lib/utils";
 
 export const useFirestore = () => {
+    // Insertar usuario y su progreso inicial.
     const insertUser = async (user, userData) => {
         const userRef = doc(collection(db, "usuarios"), user.uid);
         const userProgressRef = doc(
@@ -25,18 +27,21 @@ export const useFirestore = () => {
             user.uid
         );
 
-        let initialUserProgress = {
+        const initialUserProgress = {
             problemasAsignados: [],
         };
 
         try {
             await setDoc(userRef, userData, { merge: true });
-            await setDoc(userProgressRef, initialUserProgress, { merge: true }); // Creo progreso al usuario con su uid
+            await setDoc(userProgressRef, initialUserProgress, { merge: true });
         } catch (error) {
-            throw new Error("Error storing user info: " + error.message);
+            throw new Error(
+                "Error guardando informacion del usuario: " + error.message
+            );
         }
     };
 
+    // Insertar problema
     const insertProblem = async (problemData) => {
         const problemasCollectionRef = collection(db, "problemas");
 
@@ -45,20 +50,13 @@ export const useFirestore = () => {
                 problemasCollectionRef,
                 problemData
             );
-
-            // Get the auto-generated UID
             const uid = problemasRef.id;
-
-            // Add the UID to the problemData
             problemData.id = uid;
-
-            // Update the document with the UID field
             await setDoc(problemasRef, problemData, { merge: true });
 
-            // Return the updated problemData with the UID
             return { ...problemData, uid };
         } catch (error) {
-            throw new Error("Error storing problem info: " + error.message);
+            throw new Error("Error al insertar problema: " + error.message);
         }
     };
 
@@ -68,12 +66,11 @@ export const useFirestore = () => {
         try {
             await updateDoc(docRef, data, { merge: true });
         } catch (error) {
-            throw new Error(
-                "Error al editar informacion del usuario: " + error.message
-            );
+            throw new Error("Error al editar documento: " + error.message);
         }
     };
 
+    // Actualizar problema
     const updateAssignedProblem = async (collectionName, idDoc, data) => {
         const docRef = doc(db, collectionName, idDoc);
         data.forEach(async (element) => {
@@ -114,6 +111,7 @@ export const useFirestore = () => {
         } catch (error) {}
     };
 
+    // Listar todos los problemas
     const fetchAllUsersProgress = async () => {
         try {
             const userProgressSnapshot = await getDocs(
@@ -130,6 +128,7 @@ export const useFirestore = () => {
         } catch (error) {}
     };
 
+    // Listar problemas asignados
     const fetchCompletedProblems = async (userId) => {
         try {
             const userProgressRef = doc(db, "progresoUsuario", userId);
@@ -165,11 +164,12 @@ export const useFirestore = () => {
 
             return completedProblems;
         } catch (error) {
-            console.error("Error fetching completed problems:", error);
+            console.error("Error buscando problemas completados:", error);
             return [];
         }
     };
 
+    // Buscar problemas asignados
     const fetchAssignedProblems = async (userId) => {
         try {
             // Buscar al usuario por ID
@@ -223,11 +223,12 @@ export const useFirestore = () => {
 
             return problems;
         } catch (error) {
-            console.error("Error fetching assigned problems:", error);
+            console.error("Error buscando problemas asignados:", error);
             return [];
         }
     };
 
+    // Buscar problemas sin asignar
     const fetchUnassignedProblems = async (userId) => {
         try {
             // Buscar al usuario por ID
@@ -257,11 +258,12 @@ export const useFirestore = () => {
 
             return unassignedProblems;
         } catch (error) {
-            console.error("Error fetching non-assigned problems:", error);
+            console.error("Error buscando problemas no asignados:", error);
             return [];
         }
     };
 
+    // Guardar resultados del problema
     const saveResults = async (userId, problemId, status) => {
         const resultData = {
             usuario_id: userId,
@@ -274,16 +276,11 @@ export const useFirestore = () => {
             const resultRef = doc(collection(db, "resultados"));
             await setDoc(resultRef, resultData);
         } catch (error) {
-            console.error("Error saving results:", error);
+            console.error("Error guardando resultados:", error);
         }
     };
 
-    /**
-     * Fetches the user's progress from the "progresoUsuario" collection in the database.
-     *
-     * @param {string} userId - The ID of the user.
-     * @return {Array} An array of the problems the user has approved, or an empty array if the user has no progress.
-     */
+    // Buscar progreso del usuario
     const fetchUserProgress = async (userId) => {
         try {
             const userProgressRef = doc(db, "progresoUsuario", userId);
@@ -292,7 +289,7 @@ export const useFirestore = () => {
                 ? userProgressSnapshot.data().problemasAsignados
                 : [];
         } catch (error) {
-            console.error("Error fetching user progress:", error);
+            console.error("Error buscando el progreso dle usuario:", error);
             return [];
         }
     };
@@ -331,10 +328,11 @@ export const useFirestore = () => {
                 });
             }
         } catch (error) {
-            console.error("Error updating user progress:", error);
+            console.error("Error actualizando el progreso del usuario:", error);
         }
     };
 
+    // Buscar un usuario
     const fetchUser = async (userId) => {
         try {
             const userRef = doc(db, "usuarios", userId);
@@ -345,11 +343,11 @@ export const useFirestore = () => {
                 return userData;
             }
         } catch (error) {
-            console.error("Error fetching user:", error);
+            console.error("Error buscando usuario:", error);
         }
     };
 
-    // Fetch all users
+    // Buscar todos los usuarios
     const fetchUsers = async () => {
         try {
             const usersCollection = collection(db, "usuarios");
@@ -363,11 +361,11 @@ export const useFirestore = () => {
                 return usersData;
             }
         } catch (error) {
-            console.error("Error fetching users:", error);
+            console.error("Error buscando usuarios:", error);
         }
     };
 
-    // Function to fetch user activity logs
+    // Buscar la actividad de los logs
     const fetchUserActivityLogs = async () => {
         try {
             const logsQuery = query(
@@ -382,32 +380,38 @@ export const useFirestore = () => {
             });
             return activityLogs;
         } catch (error) {
-            console.error("Error fetching user activity logs:", error);
+            console.error(
+                "Error buscando los logs de actividad del usuario:",
+                error
+            );
             return [];
         }
     };
 
-    // Function to fetch the total number of problems
+    // Buscar la cantidad total de problemas
     const fetchTotalProblemsCount = async () => {
         try {
             const problemsQuery = collection(db, "problemas");
             const problemsSnapshot = await getDocs(problemsQuery);
 
-            return problemsSnapshot.size; // Total number of problems
+            return problemsSnapshot.size;
         } catch (error) {
-            console.error("Error fetching total problems count:", error);
+            console.error(
+                "Error buscando la cantidad total de problemas:",
+                error
+            );
             return 0;
         }
     };
 
-    // Function to fetch the total number of users
+    // Buscar el numero total de usuarios
     const fetchTotalUsersCount = async () => {
         try {
             const usersQuery = collection(db, "usuarios");
             const usersSnapshot = await getDocs(usersQuery);
-            return usersSnapshot.size; // Total number of users
+            return usersSnapshot.size;
         } catch (error) {
-            console.error("Error fetching total users count:", error);
+            console.error("Error buscando el numero total de usuarios:", error);
             return 0;
         }
     };
@@ -426,7 +430,7 @@ export const useFirestore = () => {
                 return resultsData;
             }
         } catch (error) {
-            console.error("Error fetching results:", error);
+            console.error("Error buscando resultados:", error);
             return [];
         }
     };
