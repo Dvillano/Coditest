@@ -103,7 +103,6 @@ function CodeEditor() {
             setCurrentProblem(problemList[currentIndex + 1]);
         } else {
             setProblemList([]);
-            debugger;
             const allExercisesCompleted =
                 currentIndex === problemList.length - 1;
             if (allExercisesCompleted) {
@@ -126,32 +125,13 @@ function CodeEditor() {
                 <NoAssignedProblemsComponent></NoAssignedProblemsComponent>
             ) : (
                 <div>
-                    <div className="m-2">
+                    <div className="m-5">
                         <Typography
-                            variant="h3"
+                            variant="h2"
                             className="flex justify-center m-2"
                         >
-                            {currentProblem.titulo}
+                            Problema: {currentProblem.titulo}
                         </Typography>
-
-                        <Typography variant="h6" className="justify-start m-1">
-                            {currentProblem.descripcion}
-                        </Typography>
-
-                        <Popover
-                            className="m-2"
-                            animate={{
-                                mount: { scale: 1, y: 0 },
-                                unmount: { scale: 0, y: 25 },
-                            }}
-                        >
-                            <PopoverHandler>
-                                <Button>Ayuda</Button>
-                            </PopoverHandler>
-                            <PopoverContent>
-                                {currentProblem.sugerencia}
-                            </PopoverContent>
-                        </Popover>
                     </div>
                     {/* Progress Bar */}
                     <div className="mb-4">
@@ -162,8 +142,35 @@ function CodeEditor() {
                         </div>
                     </div>
 
-                    <div className="flex">
-                        <div className="border p-4 rounded bg-gray-100  flex-1">
+                    <div className="grid grid-cols-1 m-5 gap-5">
+                        <div className="border p-4 rounded bg-gray-100 border-gray-300">
+                            <Typography
+                                variant="h6"
+                                className="justify-start m-1"
+                            >
+                                {currentProblem.descripcion}
+                            </Typography>
+
+                            <Typography
+                                variant="paragraph"
+                                className="justify-start m-1"
+                            >
+                                Ejemplo input:{" "}
+                                {currentProblem.codigo_evaluador[0].entrada}
+                            </Typography>
+                            <Typography
+                                variant="paragraph"
+                                className="justify-start m-1"
+                            >
+                                Ejemplo output:{" "}
+                                {
+                                    currentProblem.codigo_evaluador[0]
+                                        .salidaEsperada
+                                }
+                            </Typography>
+                        </div>
+
+                        <div className="border p-4 rounded bg-gray-100 border-black-500">
                             <CodeMirror
                                 value={currentProblem.plantilla_codigo.replaceAll(
                                     "\\n",
@@ -175,14 +182,27 @@ function CodeEditor() {
                                 onChange={setCode}
                             />
                         </div>
-
-                        <div className="border p-4 rounded bg-gray-100 flex-1  ">
-                            <button
+                        <div className="flex ml-5">
+                            <Popover
+                                className="text-white"
+                                animate={{
+                                    mount: { scale: 1, y: 0 },
+                                    unmount: { scale: 0, y: 25 },
+                                }}
+                            >
+                                <PopoverHandler>
+                                    <Button>Ayuda</Button>
+                                </PopoverHandler>
+                                <PopoverContent>
+                                    {currentProblem.sugerencia}
+                                </PopoverContent>
+                            </Popover>
+                            <Button
                                 onClick={executeCode}
-                                className="bg-green-500 text-white px-4 py-2 rounded mb-2"
+                                className="bg-green-500 text-white ml-3"
                             >
                                 Ejecutar
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>
