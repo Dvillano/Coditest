@@ -108,7 +108,7 @@ function CodeEditor() {
                 currentIndex === problemList.length - 1;
             if (allExercisesCompleted) {
                 // Redirect to the congratulations message component
-                handleNavigate("congratulations");
+                handleNavigate("prueba/congratulations");
             }
         }
     };
