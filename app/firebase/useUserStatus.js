@@ -1,4 +1,7 @@
-import { ref, get, onValue, off } from "firebase/database";
+// useUserStatus.js
+// Modulo para gestionar la autenticación y la base de datos en tiempo real
+
+import { ref, onValue, off } from "firebase/database";
 import { useEffect, useState } from "react";
 import { realtimeDatabase } from "./firebaseConfig";
 import { useFirebaseAuth } from "./useFirebaseAuth";
@@ -9,29 +12,31 @@ export const useUserStatus = () => {
 
     useEffect(() => {
         if (!authUser) {
-            // Handle the case when the user is not authenticated
             return;
         }
 
         const userStatusRef = ref(realtimeDatabase, "userStatus");
 
-        // Use the "onValue" function to listen for changes to the entire "userStatus" node
-        onValue(userStatusRef, (snapshot) => {
+        // Función para manejar cambios en los estados de usuario
+        const handleUserStatusChange = (snapshot) => {
             if (snapshot.exists()) {
-                // Convert the snapshot into an object containing user statuses
                 const data = snapshot.val();
                 const userStatusArray = Object.values(data);
-
                 setUserStatuses(userStatusArray);
             } else {
-                // Handle the case when there is no data
                 setUserStatuses([]);
             }
-        });
+        };
+
+        // Suscribirse a cambios en el nodo "userStatus"
+        const userStatusListener = onValue(
+            userStatusRef,
+            handleUserStatusChange
+        );
 
         return () => {
-            // Unsubscribe from the database listener when the component unmounts
-            off(userStatusRef);
+            // Cancelar la suscripción al finalizar el componente
+            off(userStatusListener);
         };
     }, [authUser]);
 

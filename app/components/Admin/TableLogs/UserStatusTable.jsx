@@ -10,7 +10,7 @@ function UserStatusTable({ userStatusLogs }) {
     const TABLE_HEAD = ["Email", "Status", "Ultima vez Online"];
 
     const [currentPage, setCurrentPage] = useState(1);
-    const logsPerPage = 5; // Number of logs to display per page
+    const logsPerPage = 5;
 
     const indexOfLastLog = currentPage * logsPerPage;
     const indexOfFirstLog = indexOfLastLog - logsPerPage;
