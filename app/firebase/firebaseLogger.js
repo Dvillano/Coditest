@@ -6,11 +6,7 @@ import { db } from "./firebaseConfig";
 
 const COLLECTION_NAME = "logs";
 
-/**
- * Registra un evento de inicio de sesión en Firestore.
- *
- * @param {Object} user - Objeto de usuario autenticado.
- */
+// Registra un evento de inicio de sesión en Firestore.
 export const logSignIn = (user) => {
     const logData = {
         event: "Sign-In",
@@ -22,11 +18,7 @@ export const logSignIn = (user) => {
     addDoc(collection(db, COLLECTION_NAME), logData);
 };
 
-/**
- * Registra un evento de cierre de sesión en Firestore.
- *
- * @param {Object} user - Objeto de usuario autenticado.
- */
+// Registra un evento de cierre de sesión en Firestore.
 export const logSignOut = (user) => {
     const logData = {
         event: "Sign-Out",
@@ -38,11 +30,7 @@ export const logSignOut = (user) => {
     addDoc(collection(db, COLLECTION_NAME), logData);
 };
 
-/**
- * Registra un evento de registro de usuario en Firestore.
- *
- * @param {Object} user - Objeto de usuario autenticado.
- */
+// Registra un evento de registro de usuario en Firestore.
 export const logRegistration = (user) => {
     const logData = {
         event: "Registration",

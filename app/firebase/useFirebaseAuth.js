@@ -34,24 +34,12 @@ const AuthUserContext = createContext({
     isLoading: true,
 });
 
-/**
- * Maneja la autenticación de usuarios en la aplicación.
- *
- * @returns {Object} Objeto con propiedades y funciones relacionadas con la autenticación.
- */
 export const useFirebaseAuth = () => {
     const { handleNavigate } = useNavigation();
     const [authUser, setAuthUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    /**
-     * Registra un nuevo usuario en Firebase.
-     *
-     * @param {string} email - Correo electrónico del usuario.
-     * @param {string} password - Contraseña del usuario.
-     * @returns {Object} Objeto que contiene información del usuario registrado.
-     * @throws {Error} Error en caso de problemas durante el registro.
-     */
+    // Registrar un nuevo usuario.
     const signUpFirebase = async (email, password) => {
         try {
             const userCredential = await createUserWithEmailAndPassword(
@@ -71,13 +59,7 @@ export const useFirebaseAuth = () => {
         }
     };
 
-    /**
-     * Inicia sesión de un usuario en Firebase.
-     *
-     * @param {string} email - Correo electrónico del usuario.
-     * @param {string} password - Contraseña del usuario.
-     * @throws {Error} Error en caso de problemas durante el inicio de sesión.
-     */
+    // Iniciar sesion de usuario.
     const signInFirebase = async (email, password) => {
         try {
             await signInWithEmailAndPassword(auth, email, password);
@@ -95,11 +77,7 @@ export const useFirebaseAuth = () => {
         }
     };
 
-    /**
-     * Cierra la sesión de un usuario en Firebase.
-     *
-     * @throws {Error} Error en caso de problemas durante el cierre de sesión.
-     */
+    // Cerrar sesión de usuario
     const signOutFirebase = async () => {
         try {
             const user = auth.currentUser;
@@ -133,7 +111,7 @@ export const useFirebaseAuth = () => {
         return () => unsubscribe();
     }, []);
 
-    // Función para manejar errores de autenticación
+    // Manejar errores de autenticación
     const handleAuthError = (message, error) => {
         toast.error(message);
         console.error(`Error: ${message}`, error);
