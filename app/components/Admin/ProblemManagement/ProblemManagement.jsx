@@ -1,3 +1,5 @@
+//  Componente que se encarga de la gestión de problemas de programación
+
 "use client";
 
 import React, { useEffect, useState } from "react";

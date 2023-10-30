@@ -1,3 +1,5 @@
+//  Proporcionar una vista para los administradores del sistema, brinda  información relevante sobre la actividad de los usuarios
+
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -9,7 +11,6 @@ import { useUserStatus } from "@/app/firebase/useUserStatus";
 import Loading from "../UserInterface/Loading";
 import LogTable from "./TableLogs/LogTable";
 
-import { Card, CardBody } from "@material-tailwind/react";
 import toast from "react-hot-toast";
 import UserStatusTable from "./TableLogs/UserStatusTable";
 
@@ -36,13 +37,13 @@ export default function AdminDashboard() {
         const fetchData = async () => {
             if (authUser) {
                 try {
+                    // Buscar al usuario actual
                     const user = await fetchUser(authUser.uid);
                     if (user) {
                         setUser(user);
                     }
 
                     if (user.rol === "admin") {
-                        // User has the admin role, fetch and display data
                         const logs = await fetchUserActivityLogs();
                         setUserActivityLogs(logs);
 
@@ -57,6 +58,7 @@ export default function AdminDashboard() {
                         );
                         setTotalOnlineUsers(onlineUsers.length);
                     } else {
+                        // Redirige si el usuario no es un admin
                         toast.error("Acceso no autorizado");
                         handleNavigate("/");
                     }

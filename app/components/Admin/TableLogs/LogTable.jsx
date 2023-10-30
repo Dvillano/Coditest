@@ -1,3 +1,5 @@
+//  Muestra registros de actividad de autenticación.
+
 import React, { useState } from "react";
 import { Card, Typography } from "@material-tailwind/react";
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";

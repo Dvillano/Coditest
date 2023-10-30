@@ -1,10 +1,11 @@
+//  Modal que permite a un entrevistador asignar problemas no asignados a un candidato específico
 "use client";
 
 import React from "react";
 
 import { useFirestore } from "@/app/firebase/useFirestore";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
     Button,
     Dialog,
@@ -14,10 +15,8 @@ import {
     Card,
     Checkbox,
 } from "@material-tailwind/react";
-import { PlusIcon } from "@heroicons/react/24/solid";
 
 import toast from "react-hot-toast";
-import { update } from "firebase/database";
 
 function ProblemAssignModal({ selectedRow, isAssignComplete }) {
     const { fetchUnassignedProblems, updateAssignedProblem } = useFirestore();
@@ -41,10 +40,10 @@ function ProblemAssignModal({ selectedRow, isAssignComplete }) {
         const problemId = problema.id;
         setSelectedProblems((prevSelectedProblems) => {
             if (prevSelectedProblems.includes(problemId)) {
-                // Remove the problem ID if it's already selected
+                // Remueve el id del problema ya seleccionado
                 return prevSelectedProblems.filter((id) => id !== problemId);
             } else {
-                // Add the problem ID if it's not selected
+                // Agrega el id del problema seleccionado
                 return [...prevSelectedProblems, problemId];
             }
         });
@@ -58,7 +57,11 @@ function ProblemAssignModal({ selectedRow, isAssignComplete }) {
                 status: "asignado",
             }));
 
-            await updateAssignedProblem("progresoUsuario", userId, problemasAsignados);
+            await updateAssignedProblem(
+                "progresoUsuario",
+                userId,
+                problemasAsignados
+            );
 
             isAssignComplete(true);
             setOpen(false);

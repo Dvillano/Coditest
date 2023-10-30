@@ -1,3 +1,5 @@
+// Componente que se encarga de mostrar un cuadro de diálogo de confirmación para eliminar un problema de programación
+
 "use client";
 import React from "react";
 
@@ -11,9 +13,7 @@ import {
     DialogBody,
     DialogHeader,
     DialogFooter,
-    IconButton,
 } from "@material-tailwind/react";
-import { TrashIcon } from "@heroicons/react/24/solid";
 
 function ProblemDeleteModal({ idProblem, isDeleteComplete }) {
     const { deleteDocument } = useFirestore();

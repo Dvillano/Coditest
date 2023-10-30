@@ -1,3 +1,4 @@
+//  Interfaz de usuario que permite a los entrevistadores gestionar la información de los candidatos.
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -61,7 +62,7 @@ function CandidatoManagement() {
         );
     };
 
-    // Filter users based on search query
+    // Filtra usuario basado en query de busqueda
     const filteredUsersBySearch = filterUsersBySearch(searchQuery);
 
     useEffect(() => {
@@ -81,7 +82,7 @@ function CandidatoManagement() {
                             (el) => el.rol === "candidato"
                         );
 
-                        // Fetch assigned problems for each candidate
+                        // Busca problemas asignados a cada candidato
                         const updatedCandidatos = await Promise.all(
                             candidatos.map(async (candidato) => {
                                 const problemasAsignados =

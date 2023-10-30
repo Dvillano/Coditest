@@ -1,3 +1,5 @@
+// Componente que se encarga de mostrar un formulario de inicio de sesión, manejar la autenticación y validar los campos de entrada.
+
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -26,7 +28,7 @@ const Login = () => {
         // Borro errores anteriores
         setErrors({ email: "", password: "" });
 
-        // Validacion de campos
+        // Validacion de email
         let isValid = true;
         const emailError = validateEmail(email);
         if (emailError) {
@@ -34,6 +36,7 @@ const Login = () => {
             isValid = false;
         }
 
+        // Validación de la contraseña
         const passwordError = validatePassword(password);
         if (passwordError) {
             setErrors((prevErrors) => ({

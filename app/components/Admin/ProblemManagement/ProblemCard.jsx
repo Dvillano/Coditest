@@ -1,10 +1,11 @@
+// Tarjeta que muestra la información de un problema de programación
+
 import React from "react";
 import {
     Card,
     CardBody,
     CardFooter,
     Typography,
-    Button,
 } from "@material-tailwind/react";
 import ProblemDetailsModal from "./ProblemDetailsModal";
 import ProblemDeleteModal from "./ProblemDeleteModal";

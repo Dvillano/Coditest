@@ -1,6 +1,10 @@
+// Este módulo contiene funciones de validación para campos comunes.
+
+// Valida un email.
 export const validateEmail = (email) => {
+    // Verifica si el email contiene el carácter "@".
     if (!email.includes("@")) {
-        return "Ingrese un email valido.";
+        return "Ingrese un email válido.";
     }
 
     return "";
@@ -15,7 +19,7 @@ export const validatePassword = (password) => {
 };
 
 export const validateName = (name) => {
-    if (name.length == 0) {
+    if (name.trim() === "") {
         return "Ingrese su nombre.";
     }
 
@@ -23,7 +27,7 @@ export const validateName = (name) => {
 };
 
 export const validateLastName = (lastName) => {
-    if (lastName.length == 0) {
+    if (lastName.trimg() === "") {
         return "Ingrese su apellido.";
     }
 

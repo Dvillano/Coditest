@@ -1,3 +1,4 @@
+// Componente que se encarga del proceso de registro de usuarios
 "use client";
 
 import React, { useState, useEffect } from "react";

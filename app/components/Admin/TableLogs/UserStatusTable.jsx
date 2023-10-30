@@ -1,3 +1,5 @@
+//  Muestra registros de estado de usuarios en línea en tiempo real
+
 "use client";
 
 import React, { useState } from "react";

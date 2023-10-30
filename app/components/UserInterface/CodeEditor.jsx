@@ -1,3 +1,5 @@
+// Componente  que permite a los candidatos, resolver problemas de programación asignados
+
 "use client";
 import React, { useEffect, useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";

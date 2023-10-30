@@ -1,3 +1,5 @@
+// Componente que se encarga de mostrar los detalles de un problema
+
 import React, { useState } from "react";
 import { Button, Dialog, Typography } from "@material-tailwind/react";
 

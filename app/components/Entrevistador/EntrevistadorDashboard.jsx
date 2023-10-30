@@ -1,3 +1,4 @@
+//  Interfaz que proporciona información y estadísticas visuales sobre los problemas.
 "use client";
 
 import React, { useEffect, useState, PureComponent } from "react";

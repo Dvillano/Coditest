@@ -1,3 +1,5 @@
+// Componente que permite a los usuarios editar el rol y el nivel de experiencia de un usuario en un formulario modal.
+
 "use client";
 import React from "react";
 

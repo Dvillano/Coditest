@@ -1,3 +1,4 @@
+// Componente de IU que permite a los administradores de la aplicación ver y gestionar usuarios de diferentes roles. Proporciona opciones de filtrado y búsqueda, así como acciones de edición y eliminación.
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -7,7 +8,6 @@ import { useNavigation } from "@/app/utils/useNavigation";
 import Loading from "../../UserInterface/Loading";
 import toast from "react-hot-toast";
 import UserEditModal from "./UserEditModal";
-import UserDeleteModal from "./UserDeleteModal";
 
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
@@ -63,7 +63,6 @@ function UserManagement() {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedUserId, setSelectedUserId] = useState(null);
     const [isEditComplete, setIsEditComplete] = useState(false);
-    const [isDeleteComplete, setIsDeleteComplete] = useState(false);
 
     const handleRowClick = (userId) => {
         setSelectedUserId(userId);
@@ -110,7 +109,6 @@ function UserManagement() {
                         const usuarios = await fetchUsers();
                         setListaUsuarios(usuarios);
                         setIsEditComplete(false);
-                        setIsDeleteComplete(false);
                     } else {
                         toast.error("Acceso no autorizado");
                         handleNavigate("/");
@@ -122,7 +120,7 @@ function UserManagement() {
         };
 
         fetchData();
-    }, [authUser, isEditComplete, isDeleteComplete]);
+    }, [authUser, isEditComplete]);
 
     if (isLoading || !authUser) {
         return <Loading />;
@@ -326,18 +324,6 @@ function UserManagement() {
                                                             />
                                                         </div>
                                                     </td>
-                                                    {/* <td className={classes}>
-                                                        <div className="flex flex-col">
-                                                            <UserDeleteModal
-                                                                idUser={
-                                                                    selectedUserId
-                                                                }
-                                                                isDeleteComplete={
-                                                                    setIsDeleteComplete
-                                                                }
-                                                            />
-                                                        </div>
-                                                    </td> */}
                                                 </tr>
                                             );
                                         }
