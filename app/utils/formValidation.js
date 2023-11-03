@@ -27,7 +27,7 @@ export const validateName = (name) => {
 };
 
 export const validateLastName = (lastName) => {
-    if (lastName.trimg() === "") {
+    if (lastName.trim() === "") {
         return "Ingrese su apellido.";
     }
 
