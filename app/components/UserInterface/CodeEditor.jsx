@@ -52,7 +52,11 @@ function CodeEditor() {
         fetchProblems();
     }, [authUser]);
 
-    // Ejecuta el código evaluado en la prueba
+    /**
+     * Ejecuta el código y lo evalúa en función de los casos de prueba.
+     *
+     * @return {undefined} No devuelve ningún valor.
+     */
     const executeCode = () => {
         try {
             const evalFn = new Function(`return ${code}`)();
@@ -78,21 +82,26 @@ function CodeEditor() {
         }
     };
 
+    /**
+     * Maneja los resultados de las pruebas según el estado de que todas las pruebas pasaron.
+     *
+     * @param {boolean} allTestsPassed - Indica si todas las pruebas pasaron o no.
+     * @return {Promise<void>} Una promesa que se resuelve cuando la función completa.
+     */
     const handleTestResults = async (allTestsPassed) => {
         const resultStatus = allTestsPassed ? "paso" : "fallo";
 
         await saveResults(authUser.uid, currentProblem.id, resultStatus);
 
-        // Solo actualizar problemas completados cuando pasan todas las pruebas
+        // Actualiza en firestore el estado de la prueba en caso de que el usuario pase
         if (resultStatus == "paso") {
             await updatePassedProblems(authUser.uid, currentProblem.id);
         }
 
+        // Si pasa los tests correctamente redirigir a la proxima prueba
         if (allTestsPassed) {
             toast.success("Bien hecho! Todos los tests pasaron");
             handleNextProblem();
-
-            //Redirigir a otra pagina en caso de haber pasado todas las preubas
         } else {
             toast.error("Oops! Algunos tests fallaron");
         }
