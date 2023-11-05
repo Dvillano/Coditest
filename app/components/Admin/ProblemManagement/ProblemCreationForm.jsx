@@ -75,12 +75,11 @@ function ProblemCreationForm() {
                 formData.codigo_evaluador.length > 0 &&
                 formData.sugerencia
             ) {
-                // Convert entrada and salidaEsperada fields to arrays
+                // Convierte entrada y salidaEsperada a arrays
                 const formattedData = {
                     ...formData,
                 };
 
-                // Ensure entrada and salidaEsperada fields are arrays
                 formattedData.codigo_evaluador.forEach((item) => {
                     if (!Array.isArray(item.entrada)) {
                         item.entrada = [item.entrada];
@@ -114,28 +113,24 @@ function ProblemCreationForm() {
                 const newCodigoEvaluador = [...prevState.codigo_evaluador];
                 if (!newCodigoEvaluador[index]) {
                     newCodigoEvaluador[index] = {
-                        entrada: [], // Initialize as an array
-                        salidaEsperada: [], // Initialize as an array
+                        entrada: [],
+                        salidaEsperada: [],
                     };
                 }
-                // Check if the value is an array (between square brackets)
+                // Revisa si el valor es un array
                 if (value.startsWith("[") && value.endsWith("]")) {
                     try {
-                        // Try to parse the value as JSON
                         const parsedValue = JSON.parse(value);
-                        // Check if the parsed value is an array
+
                         if (Array.isArray(parsedValue)) {
                             newCodigoEvaluador[index][field] = parsedValue;
                         } else {
-                            // If it's not an array, store it as a string
                             newCodigoEvaluador[index][field] = value;
                         }
                     } catch (error) {
-                        // If parsing as JSON fails, store it as a string
                         newCodigoEvaluador[index][field] = value;
                     }
                 } else {
-                    // If it's not between square brackets, store it as a string
                     newCodigoEvaluador[index][field] = value;
                 }
                 return {
@@ -156,7 +151,7 @@ function ProblemCreationForm() {
             ...prevState,
             codigo_evaluador: [
                 ...prevState.codigo_evaluador,
-                { entrada: [], salidaEsperada: [] }, // Initialize as arrays
+                { entrada: [], salidaEsperada: [] },
             ],
         }));
     };
