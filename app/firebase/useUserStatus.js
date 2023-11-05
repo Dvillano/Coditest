@@ -1,4 +1,4 @@
-import { ref, get, onValue, off } from "firebase/database";
+import { ref, onValue, off } from "firebase/database";
 import { useEffect, useState } from "react";
 import { realtimeDatabase } from "./firebaseConfig";
 import { useFirebaseAuth } from "./useFirebaseAuth";
