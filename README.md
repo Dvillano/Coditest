@@ -1,4 +1,4 @@
-# Project Name
+# Coditest
 
 Coditest is a web application built with React and Firebase. It provides a platform for administrators to manage problems, interviewers to view statistics and information about these problems, and candidates to solve assigned programming problems using the provided code editor.
 
