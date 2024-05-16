@@ -1,34 +1,30 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Project Name
 
-## Getting Started
+Coditest is a web application built with React and Firebase. It provides a platform for administrators to manage problems, interviewers to view statistics and information about these problems, and candidates to solve assigned programming problems using the provided code editor.
 
-First, run the development server:
+## About This Project
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+This project was developed as part of an academic course.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Project Structure
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+The project is organized into several directories:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- `app/`: Main application code, including routes and components.
+- `components/`: React components used throughout the application.
+- `firebase/`:  Firebase configuration and utility functions.
+- `utils/`:  Utility functions used across the application.
+- `public/`:  Static files like images.
+- `test/`: Test files and configurations.
 
-## Learn More
+## Key Files
 
-To learn more about Next.js, take a look at the following resources:
+- `app/firebase/firebaseConfig.js`: Configuration for Firebase, exporting the Firebase app instance and services like Firestore and Authentication.
+- `app/components/Admin/ProblemManagement/ProblemCreationForm.jsx`: Component for administrators to add new problems to the system.
+- `app/components/Entrevistador/EntrevistadorDashboard.jsx`: Component providing visual information and statistics about problems for interviewers.
+- `app/components/UserInterface/CodeEditor.jsx`: Component allowing candidates to solve assigned programming problems.
+- `jest.config.js`: Configuration for Jest, the testing framework used in this project.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Running the Project
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Before running the project, set up your Firebase configuration in the .env file. Provide your Firebase API key, Auth domain, Project ID, Storage bucket, Messaging sender ID, App ID, Measurement ID, and Realtime database URL.
